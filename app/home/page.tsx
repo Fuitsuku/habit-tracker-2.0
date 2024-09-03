@@ -6,7 +6,7 @@ export default function HomePage() {
     return (
         <div className="bg-zinc-900 min-h-screen p-10">
             <PageHeader page_name="Home"/>
-            <ul className="py-10 space-y-3 list-outside">
+            <ul className="space-y-3 list-outside">
                 <li>
                     <Button className="bg-zinc-900 font-sans font-thin text-white text-4xl p">
                         Tasks
