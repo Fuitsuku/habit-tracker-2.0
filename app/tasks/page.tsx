@@ -157,94 +157,118 @@ export default function TasksPage() {
                 <TabsContent value="setup">
                     <Card className="border-none shadow-none">
                         <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none shadow-none">
-                            <div>
-                                {/* Add Row Button */}
-                                <button
-                                    onClick={addRow}
-                                    className="mb-4 bg-blue-500 text-white p-2 rounded border-none"
-                                >
-                                    Add Row
-                                </button>
-                                {/* Table for rows */}
+                            {/* Rows and Button Container */}
+                            <div className="flex flex-col">
+                                {/* Rows Table */}
                                 <table className="min-w-full border-collapse border-none">
-                                <tbody>
-                                    {rows.map((row, index) => (
-                                        <tr key={index} className="h-32 border-b border-white">
-                                            <td colSpan={3} className="p-2">
-                                                <div className="grid grid-cols-3 grid-rows-2 gap-2 h-full">
-                                                    {/* Field 1 (spanning cells 1, 2, 4, 5) */}
-                                                    <div className="relative col-span-2 row-span-2">
-                                                        <label className="absolute top-1 left-2 text-xs text-white bg-[#202020] px-1 z-10">
-                                                            Description
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            value={row.field1}
-                                                            onChange={(e) => {
-                                                                const newRows = [...rows];
-                                                                newRows[index].field1 = e.target.value;
-                                                                setRows(newRows);
-                                                            }}
-                                                            className="w-full h-auto bg-[#202020] text-white p-2 border border-white rounded-md mt-1"
-                                                            placeholder="Field 1"
-                                                        />
-                                                    </div>
+                                    <tbody>
+                                        {rows.map((row, index) => (
+                                            <tr key={index} className="h-24 border-b border-white">
+                                                <td colSpan={3} className="p-2 py-4">
+                                                    <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
+                                                        {/* Field 1: Description */}
+                                                        <div className="relative col-span-2 row-span-2 h-full">
+                                                            <label className="absolute -top-4 left-2 text-xs text-white px-1 z-10">
+                                                                Description
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                value={row.field1}
+                                                                onChange={(e) => {
+                                                                    const newRows = [...rows];
+                                                                    newRows[index].field1 = e.target.value;
+                                                                    setRows(newRows);
+                                                                }}
+                                                                className="w-full h-full bg-[#202020] text-white text-sm p-4 rounded-md"
+                                                                placeholder="Field 1"
+                                                            />
+                                                        </div>
 
-                                                    {/* Field 2 (cell 3) */}
-                                                    <div className="relative col-span-1 row-span-1">
-                                                        <label className="absolute top-1 left-2 text-xs text-white bg-[#202020] px-1 z-10">
-                                                            Point
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            value={row.field2}
-                                                            onChange={(e) => {
-                                                                const newRows = [...rows];
-                                                                newRows[index].field2 = parseInt(e.target.value);
-                                                                setRows(newRows);
-                                                            }}
-                                                            className="w-full bg-[#202020] text-white p-2 border border-white rounded-md mt-4"
-                                                            placeholder="Field 2"
-                                                        />
-                                                    </div>
+                                                        {/* Field 2: Point */}
+                                                        <div className="relative col-span-1 row-span-1">
+                                                            <label className="absolute -top-4 left-2 text-xs text-white  px-1 z-10">
+                                                                Point Value
+                                                            </label>
+                                                            <input
+                                                                type="number"
+                                                                value={row.field2}
+                                                                onChange={(e) => {
+                                                                    const newRows = [...rows];
+                                                                    newRows[index].field2 = parseInt(e.target.value);
+                                                                    setRows(newRows);
+                                                                }}
+                                                                className="w-full bg-[#202020] text-white text-sm p-2 rounded-md"
+                                                                placeholder="Field 2"
+                                                            />
+                                                        </div>
 
-                                                    {/* Field 3 (cell 6) */}
-                                                    <div className="relative col-span-1 row-span-1">
-                                                        <label className="absolute top-1 left-2 text-xs text-white bg-[#202020] px-1 z-10">
-                                                            Growth
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            value={row.field3}
-                                                            onChange={(e) => {
-                                                                const newRows = [...rows];
-                                                                newRows[index].field3 = parseInt(e.target.value);
-                                                                setRows(newRows);
-                                                            }}
-                                                            className="w-full bg-[#202020] text-white p-2 border border-white rounded-md mt-4"
-                                                            placeholder="Field 3"
-                                                        />
+                                                        {/* Field 3: Growth */}
+                                                        <div className="relative col-span-1 row-span-1">
+                                                            <label className="absolute -top-4 left-2 text-xs text-white px-1 z-10">
+                                                                Growth Factor
+                                                            </label>
+                                                            <input
+                                                                type="number"
+                                                                value={row.field3}
+                                                                onChange={(e) => {
+                                                                    const newRows = [...rows];
+                                                                    newRows[index].field3 = parseInt(e.target.value);
+                                                                    setRows(newRows);
+                                                                }}
+                                                                className="w-full bg-[#202020] text-white text-sm p-2 rounded-md"
+                                                                placeholder="Field 3"
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
                                 </table>
+
+                                {/* Add Row Button */}
+                                <div className="flex justify-center mt-4">
+                                    <button
+                                        onClick={addRow}
+                                        className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-7 flex items-center justify-center"
+                                    >
+                                        +
+                                    </button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
+                <div className="flex justify-between items-center mt-4">
+                    {/* Back Button */}
+                    <div className="text-left">
+                        <button className="bg-zinc-900 text-white border-none p-3 rounded w-30">
+                            &lt;--- Back
+                        </button>
+                    </div>
+
+                    {/* Conditional Footer Content */}
+                    <div className="text-white text-right flex items-center">
+                        <TabsContent value="current">
+                            <div>
+                                <div>Projected Gain:</div>
+                                <div>10 &#9650;</div>
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="setup">
+                            <button
+                                onClick={() => {
+                                    // Handle setup logic here
+                                    console.log("Setup");
+                                }}
+                                className="bg-black text-white text-xl p-3 rounded-lg w-40"
+                            >
+                                Refresh
+                            </button>
+                        </TabsContent>
+                    </div>
+                </div>
             </Tabs>
-            <div className="flex justify-between mt-4">
-                <div className="text-left">
-                    <Button className="bg-zinc-900 text-white border-none">&lt;--- Back</Button>
-                </div>
-                <div className="text-white text-right flex flex-col">
-                    <div>Projected Gain:</div>
-                    <div>{potential_gain} &#9650;</div>
-                </div>
-            </div>
         </div>
     );    
 }    
