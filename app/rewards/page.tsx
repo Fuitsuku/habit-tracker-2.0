@@ -127,7 +127,7 @@ export default function TasksPage() {
                     <div className="flex justify-center mt-4 space-x-4">
                         <button
                             onClick={addRow}
-                            className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-14 flex items-center justify-center"
+                            className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
                         >
                             +
                         </button>
@@ -138,7 +138,7 @@ export default function TasksPage() {
                                     setRows(newRows);
                                 }
                             }}
-                            className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-14 flex items-center justify-center"
+                            className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
                         >
                             -
                         </button>
