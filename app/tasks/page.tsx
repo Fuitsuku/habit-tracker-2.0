@@ -183,7 +183,7 @@ export default function TasksPage() {
                                                                 placeholder="Field 1"
                                                             />
                                                         </div>
-
+    
                                                         {/* Field 2: Point */}
                                                         <div className="relative col-span-1 row-span-1">
                                                             <label className="absolute -top-4 left-2 text-xs text-white  px-1 z-10">
@@ -201,7 +201,7 @@ export default function TasksPage() {
                                                                 placeholder="Field 2"
                                                             />
                                                         </div>
-
+    
                                                         {/* Field 3: Growth */}
                                                         <div className="relative col-span-1 row-span-1">
                                                             <label className="absolute -top-4 left-2 text-xs text-white px-1 z-10">
@@ -225,14 +225,25 @@ export default function TasksPage() {
                                         ))}
                                     </tbody>
                                 </table>
-
+    
                                 {/* Add Row Button */}
-                                <div className="flex justify-center mt-4">
+                                <div className="flex justify-center mt-4 space-x-4">
                                     <button
                                         onClick={addRow}
-                                        className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-7 flex items-center justify-center"
+                                        className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-3 flex items-center justify-center"
                                     >
                                         +
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (rows.length > 0) {
+                                                const newRows = rows.slice(0, -1); // Remove the last item
+                                                setRows(newRows);
+                                            }
+                                        }}
+                                        className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-3 flex items-center justify-center"
+                                    >
+                                        -
                                     </button>
                                 </div>
                             </div>
@@ -246,7 +257,7 @@ export default function TasksPage() {
                             &lt;--- Back
                         </button>
                     </div>
-
+    
                     {/* Conditional Footer Content */}
                     <div className="text-white text-right flex items-center">
                         <TabsContent value="current">
@@ -258,7 +269,6 @@ export default function TasksPage() {
                         <TabsContent value="setup">
                             <button
                                 onClick={() => {
-                                    // Handle setup logic here
                                     console.log("Setup");
                                 }}
                                 className="bg-black text-white text-xl p-3 rounded-lg w-40"
