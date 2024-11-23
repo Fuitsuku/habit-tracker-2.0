@@ -1,117 +1,53 @@
 'use client';
-const test_task_data = [
-        {
-            task_id : 1,
-            completion : false,
-            task_name : "Task 1",
-            points : 5,
-            day_streak : 1
-        },
-        {
-            task_id : 2,
-            completion : false,
-            task_name : "Task 2",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 3,
-            completion : true,
-            task_name : "Task 3",
-            points : 15,
-            day_streak : 3
-        },
-        {
-            task_id : 4,
-            completion : false,
-            task_name : "Task 4",
-            points : 5,
-            day_streak : 1
-        },
-        {
-            task_id : 5,
-            completion : false,
-            task_name : "Task 5",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 6,
-            completion : true,
-            task_name : "Task 6",
-            points : 15,
-            day_streak : 3
-        }
-    ]
 
-// Imports start here
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useState } from 'react';
-  
 import PageHeader from "../components/PageHeader";
 
 export default function TasksPage() {
     const test_task_data = [
         {
-            task_id : 1,
-            completion : false,
-            task_name : "Task 1",
-            points : 5,
-            day_streak : 1
+            task_id: 1,
+            completion: false,
+            task_name: "Task 1",
+            points: 5,
+            day_streak: 1
         },
         {
-            task_id : 2,
-            completion : false,
-            task_name : "Task 2",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 3,
-            completion : true,
-            task_name : "Task 3",
-            points : 15,
-            day_streak : 3
-        },
-        {
-            task_id : 4,
-            completion : false,
-            task_name : "Task 4",
-            points : 5,
-            day_streak : 1
-        },
-        {
-            task_id : 5,
-            completion : false,
-            task_name : "Task 5",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 6,
-            completion : true,
-            task_name : "Task 6",
-            points : 15,
-            day_streak : 3
+            task_id: 2,
+            completion: false,
+            task_name: "Task 2",
+            points: 8,
+            day_streak: 1
         }
-    ]
-    
-    const potential_gain = 10;
+    ];
+
     interface RowData {
         field1: string;
         field2: number;
         field3: number;
-      }
-    
+    }
+
     const [rows, setRows] = useState<RowData[]>([{ field1: '', field2: 0, field3: 0 }]);
-    
+    const [newRow, setNewRow] = useState<RowData>({ field1: '', field2: 0, field3: 0 });
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     const addRow = () => {
-        setRows([...rows, { field1: '', field2: 0, field3: 0 }]);
+        setRows([...rows, newRow]);
+        setNewRow({ field1: '', field2: 0, field3: 0 });
+        setIsDialogOpen(false); // Close the dialog
+    };
+
+    const deleteRow = () => {
+        if (rows.length > 0) {
+            const newRows = rows.slice(0, -1);
+            setRows(newRows);
+        }
     };
 
     return (
@@ -138,7 +74,6 @@ export default function TasksPage() {
                         <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none rounded-lg shadow-none">
                             <Table className="min-w-full border-collapse border-none">
                                 <TableBody>
-                                    {/* Dynamically populate rows */}
                                     {test_task_data.map((task) => (
                                         <TableRow key={task.task_id} className="h-12 border-b border-white">
                                             <TableCell className="text-center text-white">
@@ -157,7 +92,6 @@ export default function TasksPage() {
                 <TabsContent value="setup">
                     <Card className="border-none shadow-none">
                         <CardContent className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
-                            {/* Rows and Button Container */}
                             <div className="flex flex-col">
                                 {/* Rows Table */}
                                 <table className="min-w-full border-collapse border-none">
@@ -166,7 +100,6 @@ export default function TasksPage() {
                                             <tr key={index} className="h-24 border-b border-white">
                                                 <td colSpan={3} className="p-2 py-4">
                                                     <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
-                                                        {/* Field 1: Description */}
                                                         <div className="relative col-span-2 row-span-2 h-full">
                                                             <label className="absolute -top-4 left-0 text-xs text-white px-1 z-10">
                                                                 Description
@@ -183,10 +116,8 @@ export default function TasksPage() {
                                                                 placeholder="Field 1"
                                                             />
                                                         </div>
-    
-                                                        {/* Field 2: Point */}
                                                         <div className="relative col-span-1 row-span-1">
-                                                            <label className="absolute -top-4 left-0 text-xs text-white  px-1 z-10">
+                                                            <label className="absolute -top-4 left-0 text-xs text-white px-1 z-10">
                                                                 Point Value
                                                             </label>
                                                             <input
@@ -201,8 +132,6 @@ export default function TasksPage() {
                                                                 placeholder="Field 2"
                                                             />
                                                         </div>
-    
-                                                        {/* Field 3: Growth */}
                                                         <div className="relative col-span-1 row-span-1">
                                                             <label className="absolute -top-4 left-0 text-xs text-white px-1 z-10">
                                                                 Growth Factor
@@ -225,23 +154,61 @@ export default function TasksPage() {
                                         ))}
                                     </tbody>
                                 </table>
-    
-                                {/* Add Row Button */}
+
+                                {/* Add Row and Delete Buttons */}
                                 <div className="flex justify-center mt-4 space-x-4">
+                                    <Dialog
+                                       open={isDialogOpen}
+                                       onOpenChange={setIsDialogOpen}
+                                   >
+                                        <DialogTrigger asChild>
+                                            <Button className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center">
+                                                +
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="bg-[#202020]">
+                                            <DialogHeader>
+                                                <DialogTitle className="text-white">New Task</DialogTitle>
+                                            </DialogHeader>
+                                            <div className="space-y-4">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Description"
+                                                    value={newRow.field1}
+                                                    onChange={(e) =>
+                                                        setNewRow({ ...newRow, field1: e.target.value })
+                                                    }
+                                                    className="w-full p-2 bg-black rounded"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Point Value"
+                                                    value={newRow.field2}
+                                                    onChange={(e) =>
+                                                        setNewRow({ ...newRow, field2: parseInt(e.target.value) })
+                                                    }
+                                                    className="w-full p-2 bg-black text-white rounded"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Growth Factor"
+                                                    value={newRow.field3}
+                                                    onChange={(e) =>
+                                                        setNewRow({ ...newRow, field3: parseInt(e.target.value) })
+                                                    }
+                                                    className="w-full p-2 bg-black text-white rounded"
+                                                />
+                                            </div>
+                                            <DialogFooter>
+                                                <Button onClick={addRow} className="bg-green-400 text-white">
+                                                    Confirm
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
                                     <button
-                                        onClick={addRow}
-                                        className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-3 flex items-center justify-center"
-                                    >
-                                        +
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            if (rows.length > 0) {
-                                                const newRows = rows.slice(0, -1); // Remove the last item
-                                                setRows(newRows);
-                                            }
-                                        }}
-                                        className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-3 flex items-center justify-center"
+                                        onClick={deleteRow}
+                                        className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
                                     >
                                         -
                                     </button>
@@ -250,35 +217,7 @@ export default function TasksPage() {
                         </CardContent>
                     </Card>
                 </TabsContent>
-                <div className="flex justify-between items-center mt-4">
-                    {/* Back Button */}
-                    <div className="text-left">
-                        <button className="bg-zinc-900 text-white border-none p-3 rounded w-30">
-                            &lt;--- Back
-                        </button>
-                    </div>
-    
-                    {/* Conditional Footer Content */}
-                    <div className="text-white text-right flex items-center">
-                        <TabsContent value="current">
-                            <div>
-                                <div>Projected Gain:</div>
-                                <div>10 &#9650;</div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="setup">
-                            <button
-                                onClick={() => {
-                                    console.log("Setup");
-                                }}
-                                className="bg-black text-white text-xl p-3 rounded-lg w-40"
-                            >
-                                Refresh
-                            </button>
-                        </TabsContent>
-                    </div>
-                </div>
             </Tabs>
         </div>
-    );    
-}    
+    );
+}

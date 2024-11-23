@@ -1,49 +1,4 @@
 'use client';
-const test_task_data = [
-        {
-            task_id : 1,
-            completion : false,
-            task_name : "Task 1",
-            points : 5,
-            day_streak : 1
-        },
-        {
-            task_id : 2,
-            completion : false,
-            task_name : "Task 2",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 3,
-            completion : true,
-            task_name : "Task 3",
-            points : 15,
-            day_streak : 3
-        },
-        {
-            task_id : 4,
-            completion : false,
-            task_name : "Task 4",
-            points : 5,
-            day_streak : 1
-        },
-        {
-            task_id : 5,
-            completion : false,
-            task_name : "Task 5",
-            points : 8,
-            day_streak : 1
-        },
-        {
-            task_id : 6,
-            completion : true,
-            task_name : "Task 6",
-            points : 15,
-            day_streak : 3
-        }
-    ]
-
 // Imports start here
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -60,7 +15,7 @@ interface RowData{
     point_value: number
 }
 
-export default function TasksPage() {
+export default function RewardsPage() {
     const [rows, setRows] = useState<RowData[]>([{ reward_name: '', point_value: 0}]);
     
     const addRow = () => {
