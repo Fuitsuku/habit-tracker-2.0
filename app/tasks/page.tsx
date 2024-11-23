@@ -168,7 +168,7 @@ export default function TasksPage() {
                                                     <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
                                                         {/* Field 1: Description */}
                                                         <div className="relative col-span-2 row-span-2 h-full">
-                                                            <label className="absolute -top-4 left-2 text-xs text-white px-1 z-10">
+                                                            <label className="absolute -top-4 left-0 text-xs text-white px-1 z-10">
                                                                 Description
                                                             </label>
                                                             <input
@@ -186,7 +186,7 @@ export default function TasksPage() {
     
                                                         {/* Field 2: Point */}
                                                         <div className="relative col-span-1 row-span-1">
-                                                            <label className="absolute -top-4 left-2 text-xs text-white  px-1 z-10">
+                                                            <label className="absolute -top-4 left-0 text-xs text-white  px-1 z-10">
                                                                 Point Value
                                                             </label>
                                                             <input
@@ -204,7 +204,7 @@ export default function TasksPage() {
     
                                                         {/* Field 3: Growth */}
                                                         <div className="relative col-span-1 row-span-1">
-                                                            <label className="absolute -top-4 left-2 text-xs text-white px-1 z-10">
+                                                            <label className="absolute -top-4 left-0 text-xs text-white px-1 z-10">
                                                                 Growth Factor
                                                             </label>
                                                             <input
