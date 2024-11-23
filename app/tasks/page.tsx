@@ -135,7 +135,7 @@ export default function TasksPage() {
                 </TabsList>
                 <TabsContent value="current">
                     <Card className="border-none shadow-none">
-                        <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none shadow-none">
+                        <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none rounded-lg shadow-none">
                             <Table className="min-w-full border-collapse border-none">
                                 <TableBody>
                                     {/* Dynamically populate rows */}
@@ -156,7 +156,7 @@ export default function TasksPage() {
                 </TabsContent>
                 <TabsContent value="setup">
                     <Card className="border-none shadow-none">
-                        <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none shadow-none">
+                        <CardContent className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
                             {/* Rows and Button Container */}
                             <div className="flex flex-col">
                                 {/* Rows Table */}

@@ -71,9 +71,9 @@ export default function TasksPage() {
         <div className="bg-[#202020] h-screen p-10">
             <PageHeader page_name="Rewards" />
             {/* Setup Section */}
-            <div className="space-y-2 h-96 overflow-y-auto bg-black border-none shadow-none">
+            <div className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
                 {/* Rows and Button Container */}
-                <div className="flex flex-col">
+                <div className="flex flex-col ">
                     {/* Rows Table */}
                     <table className="min-w-full border-collapse border-none">
                         <tbody>
