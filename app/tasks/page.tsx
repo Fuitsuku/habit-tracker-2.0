@@ -217,6 +217,34 @@ export default function TasksPage() {
                         </CardContent>
                     </Card>
                 </TabsContent>
+                <div className="flex justify-between items-center mt-4">
+                {/* Back Button */}
+                <div className="text-left">
+                    <button className="bg-zinc-900 text-white border-none p-3 rounded w-30">
+                        &lt;--- Back
+                    </button>
+                </div>
+
+                {/* Conditional Footer Content */}
+                <div className="text-white text-right flex items-center">
+                    <TabsContent value="current">
+                        <div>
+                            <div>Projected Gain:</div>
+                            <div>10 &#9650;</div>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="setup">
+                        <button
+                            onClick={() => {
+                                console.log("Setup");
+                            }}
+                            className="bg-black text-white text-xl p-3 rounded-lg w-40"
+                        >
+                            Refresh
+                        </button>
+                    </TabsContent>
+                </div>
+            </div>
             </Tabs>
         </div>
     );
