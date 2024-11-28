@@ -27,26 +27,26 @@ export default function TasksPage() {
         }
     ];
 
-    interface RowData {
-        field1: string;
-        field2: number;
-        field3: number;
+    interface TaskData {
+        task_name: string;
+        point_value: number;
+        growth_factor: number;
     }
 
-    const [rows, setRows] = useState<RowData[]>([{ field1: '', field2: 0, field3: 0 }]);
-    const [newRow, setNewRow] = useState<RowData>({ field1: '', field2: 0, field3: 0 });
+    const [tasks, setTasks] = useState<TaskData[]>([{ task_name: '', point_value: 0, growth_factor: 0 }]);
+    const [newTask, setNewTask] = useState<TaskData>({ task_name: '', point_value: 0, growth_factor: 0 });
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const addRow = () => {
-        setRows([...rows, newRow]);
-        setNewRow({ field1: '', field2: 0, field3: 0 });
+    const addTask = () => {
+        setTasks([...tasks, newTask]);
+        setNewTask({ task_name: '', point_value: 0, growth_factor: 0 });
         setIsDialogOpen(false); // Close the dialog
     };
 
-    const deleteRow = () => {
-        if (rows.length > 0) {
-            const newRows = rows.slice(0, -1);
-            setRows(newRows);
+    const deleteTask = () => {
+        if (tasks.length > 0) {
+            const newTasks = tasks.slice(0, -1);
+            setTasks(newTasks);
         }
     };
 
@@ -93,10 +93,10 @@ export default function TasksPage() {
                     <Card className="border-none shadow-none">
                         <CardContent className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
                             <div className="flex flex-col">
-                                {/* Rows Table */}
+                                {/* Tasks Table */}
                                 <table className="min-w-full border-collapse border-none">
                                     <tbody>
-                                        {rows.map((row, index) => (
+                                        {tasks.map((task, index) => (
                                             <tr key={index} className="h-24 border-b border-white">
                                                 <td colSpan={3} className="p-2 py-4">
                                                     <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
@@ -106,11 +106,11 @@ export default function TasksPage() {
                                                             </label>
                                                             <input
                                                                 type="text"
-                                                                value={row.field1}
+                                                                value={task.task_name}
                                                                 onChange={(e) => {
-                                                                    const newRows = [...rows];
-                                                                    newRows[index].field1 = e.target.value;
-                                                                    setRows(newRows);
+                                                                    const newTasks = [...tasks];
+                                                                    newTasks[index].task_name = e.target.value;
+                                                                    setTasks(newTasks);
                                                                 }}
                                                                 className="w-full h-full bg-[#202020] text-white text-sm p-4 rounded-md"
                                                                 placeholder="Field 1"
@@ -122,11 +122,11 @@ export default function TasksPage() {
                                                             </label>
                                                             <input
                                                                 type="number"
-                                                                value={row.field2}
+                                                                value={task.point_value}
                                                                 onChange={(e) => {
-                                                                    const newRows = [...rows];
-                                                                    newRows[index].field2 = parseInt(e.target.value);
-                                                                    setRows(newRows);
+                                                                    const newTasks = [...tasks];
+                                                                    newTasks[index].point_value = parseInt(e.target.value);
+                                                                    setTasks(newTasks);
                                                                 }}
                                                                 className="w-full bg-[#202020] text-white text-sm p-2 rounded-md"
                                                                 placeholder="Field 2"
@@ -138,11 +138,11 @@ export default function TasksPage() {
                                                             </label>
                                                             <input
                                                                 type="number"
-                                                                value={row.field3}
+                                                                value={task.growth_factor}
                                                                 onChange={(e) => {
-                                                                    const newRows = [...rows];
-                                                                    newRows[index].field3 = parseInt(e.target.value);
-                                                                    setRows(newRows);
+                                                                    const newTasks = [...tasks];
+                                                                    newTasks[index].growth_factor = parseInt(e.target.value);
+                                                                    setTasks(newTasks);
                                                                 }}
                                                                 className="w-full bg-[#202020] text-white text-sm p-2 rounded-md"
                                                                 placeholder="Field 3"
@@ -155,7 +155,7 @@ export default function TasksPage() {
                                     </tbody>
                                 </table>
 
-                                {/* Add Row and Delete Buttons */}
+                                {/* Add Task and Delete Buttons */}
                                 <div className="flex justify-center mt-4 space-x-4">
                                     <Dialog
                                        open={isDialogOpen}
@@ -174,40 +174,40 @@ export default function TasksPage() {
                                                 <input
                                                     type="text"
                                                     placeholder="Description"
-                                                    value={newRow.field1}
+                                                    value={newTask.task_name}
                                                     onChange={(e) =>
-                                                        setNewRow({ ...newRow, field1: e.target.value })
+                                                        setNewTask({ ...newTask, task_name: e.target.value })
                                                     }
                                                     className="w-full p-2 bg-black rounded"
                                                 />
                                                 <input
                                                     type="number"
                                                     placeholder="Point Value"
-                                                    value={newRow.field2}
+                                                    value={newTask.point_value}
                                                     onChange={(e) =>
-                                                        setNewRow({ ...newRow, field2: parseInt(e.target.value) })
+                                                        setNewTask({ ...newTask, point_value: parseInt(e.target.value) })
                                                     }
                                                     className="w-full p-2 bg-black text-white rounded"
                                                 />
                                                 <input
                                                     type="number"
                                                     placeholder="Growth Factor"
-                                                    value={newRow.field3}
+                                                    value={newTask.growth_factor}
                                                     onChange={(e) =>
-                                                        setNewRow({ ...newRow, field3: parseInt(e.target.value) })
+                                                        setNewTask({ ...newTask, growth_factor: parseInt(e.target.value) })
                                                     }
                                                     className="w-full p-2 bg-black text-white rounded"
                                                 />
                                             </div>
                                             <DialogFooter>
-                                                <Button onClick={addRow} className="bg-green-400 text-white">
+                                                <Button onClick={addTask} className="bg-green-400 text-white">
                                                     Confirm
                                                 </Button>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
                                     <button
-                                        onClick={deleteRow}
+                                        onClick={deleteTask}
                                         className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
                                     >
                                         -

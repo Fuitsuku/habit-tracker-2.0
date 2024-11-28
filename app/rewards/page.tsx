@@ -10,16 +10,16 @@ import { useState } from 'react';
   
 import PageHeader from "../components/PageHeader";
 
-interface RowData{
+interface RewardData{
     reward_name : string,
     point_value: number
 }
 
 export default function RewardsPage() {
-    const [rows, setRows] = useState<RowData[]>([{ reward_name: '', point_value: 0}]);
+    const [rewards, setRewards] = useState<RewardData[]>([{ reward_name: '', point_value: 0}]);
     
-    const addRow = () => {
-        setRows([...rows, { reward_name: '', point_value: 0}]);
+    const addReward = () => {
+        setRewards([...rewards, { reward_name: '', point_value: 0}]);
     };
 
     return (
@@ -27,12 +27,12 @@ export default function RewardsPage() {
             <PageHeader page_name="Rewards" />
             {/* Setup Section */}
             <div className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
-                {/* Rows and Button Container */}
+                {/* rewards and Button Container */}
                 <div className="flex flex-col ">
-                    {/* Rows Table */}
+                    {/* rewards Table */}
                     <table className="min-w-full border-collapse border-none">
                         <tbody>
-                            {rows.map((row, index) => (
+                            {rewards.map((reward, index) => (
                                 <tr key={index} className="h-24 border-b border-white">
                                     <td colSpan={2} className="p-2 py-4">
                                         <div className="grid grid-cols-2 gap-4 h-full">
@@ -43,11 +43,11 @@ export default function RewardsPage() {
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    value={row.reward_name}
+                                                    value={reward.reward_name}
                                                     onChange={(e) => {
-                                                        const newRows = [...rows];
-                                                        newRows[index].reward_name = e.target.value;
-                                                        setRows(newRows);
+                                                        const newRewards = [...rewards];
+                                                        newRewards[index].reward_name = e.target.value;
+                                                        setRewards(newRewards);
                                                     }}
                                                     className="w-full h-full bg-[#202020] text-white text-sm p-4 rounded-md"
                                                     placeholder="Enter name"
@@ -61,11 +61,11 @@ export default function RewardsPage() {
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    value={row.point_value}
+                                                    value={reward.point_value}
                                                     onChange={(e) => {
-                                                        const newRows = [...rows];
-                                                        newRows[index].point_value = parseInt(e.target.value) || 0;
-                                                        setRows(newRows);
+                                                        const newRewards = [...rewards];
+                                                        newRewards[index].point_value = parseInt(e.target.value) || 0;
+                                                        setRewards(newRewards);
                                                     }}
                                                     className="w-full h-full bg-[#202020] text-white text-sm p-4 rounded-md"
                                                     placeholder="Enter point value"
@@ -78,19 +78,19 @@ export default function RewardsPage() {
                         </tbody>
                     </table>
     
-                    {/* Add Row and Remove Row Buttons */}
+                    {/* Add reward and Remove reward Buttons */}
                     <div className="flex justify-center mt-4 space-x-4">
                         <button
-                            onClick={addRow}
+                            onClick={addReward}
                             className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
                         >
                             +
                         </button>
                         <button
                             onClick={() => {
-                                if (rows.length > 0) {
-                                    const newRows = rows.slice(0, -1); // Remove the last item
-                                    setRows(newRows);
+                                if (rewards.length > 0) {
+                                    const newrewards = rewards.slice(0, -1); // Remove the last item
+                                    setRewards(newrewards);
                                 }
                             }}
                             className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
@@ -111,7 +111,7 @@ export default function RewardsPage() {
                 {/* Reset Button */}
                 <button
                     onClick={() => {
-                        setRows([]); // Reset rows or implement the reset functionality
+                        setRewards([]); // Reset rewards or implement the reset functionality
                     }}
                     className="bg-black text-white text-xl p-3 rounded-lg w-40"
                 >
