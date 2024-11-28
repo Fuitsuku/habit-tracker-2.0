@@ -10,7 +10,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import PageHeader from "../components/PageHeader";
 
@@ -22,15 +21,15 @@ interface RewardData {
 export default function RewardsPage() {
   const [rewards, setRewards] = useState<RewardData[]>([]);
   const [newReward, setNewReward] = useState<RewardData>({ reward_name: "", point_value: 0 });
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedReward, setSelectedReward] = useState<RewardData | null>(null);
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For + button drawer
 
   // Add a new reward
   const addReward = () => {
     setRewards([...rewards, newReward]);
     setNewReward({ reward_name: "", point_value: 0 });
-    setIsDialogOpen(false); // Close the dialog
+    setAddDrawerOpen(false); // Close the drawer
   };
 
   // Delete the last reward
@@ -72,39 +71,53 @@ export default function RewardsPage() {
 
         {/* Add Task and Delete Buttons */}
         <div className="flex justify-center mt-4 space-x-4">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center">
-                +
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-[#202020]">
-              <DialogHeader>
-                <DialogTitle className="text-white">New Reward</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
+          {/* Add Reward Drawer */}
+          <Button
+            onClick={() => setAddDrawerOpen(true)}
+            className="bg-[#202020] text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
+          >
+            +
+          </Button>
+          <Drawer open={addDrawerOpen} onOpenChange={setAddDrawerOpen}>
+            <DrawerContent className="bg-[#202020]">
+              <DrawerHeader>
+                <DrawerTitle className="text-white text-lg">Add New Reward</DrawerTitle>
+                <DrawerDescription>
+                  Enter the name and point value of the new reward.
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 bg-[#202020] space-y-4">
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder="Reward Name"
                   value={newReward.reward_name}
                   onChange={(e) => setNewReward({ ...newReward, reward_name: e.target.value })}
-                  className="w-full p-2 bg-black rounded text-white"
+                  className="w-full p-2 bg-black text-white rounded"
                 />
                 <input
                   type="number"
                   placeholder="Point Value"
                   value={newReward.point_value}
-                  onChange={(e) => setNewReward({ ...newReward, point_value: parseInt(e.target.value) })}
+                  onChange={(e) => setNewReward({ ...newReward, point_value: parseInt(e.target.value) || 0 })}
                   className="w-full p-2 bg-black text-white rounded"
                 />
               </div>
-              <DialogFooter>
-                <Button onClick={addReward} className="bg-green-400 text-white">
-                  Confirm
+              <DrawerFooter>
+                <Button onClick={addReward} className="bg-black text-white">
+                  Add Reward
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                <Button
+                  variant="outline"
+                  onClick={() => setAddDrawerOpen(false)}
+                  className="text-white bg-gray-400"
+                >
+                  Cancel
+                </Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+
+          {/* Delete Reward Button */}
           <button
             onClick={deleteReward}
             className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
