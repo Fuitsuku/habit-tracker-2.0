@@ -34,7 +34,7 @@ export default function TasksPage() {
   }
 
   const [tasks, setTasks] = useState<TaskData[]>([{ task_name: "", point_value: 0, growth_factor: 0 }]);
-  const [newTask, setNewTask] = useState<TaskData>({ task_name: "", point_value: 0, growth_factor: 0 });
+  const [newTask, setNewTask] = useState<TaskData>({ task_name: "Test Task 1", point_value: 10, growth_factor: 4 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
 
   // Add a new task
