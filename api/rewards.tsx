@@ -52,7 +52,7 @@ class RewardApiWrapper {
         // Add custom error handling logic here
         if (error.response) {
             // Server responded with a status outside 2xx
-            console.error("RewardApi Error:", error.response.data);
+            console.error("AccountApi Error:", error.response.data);
         } else if (error.request) {
             // No response received
             console.error("Network Error:", error.request);
@@ -60,7 +60,7 @@ class RewardApiWrapper {
             // Error setting up the request
             console.error("Error:", error.message);
         }
-        return new Error(error.message || "An error occurred");
+        return new Error(error.response.data["body"]["message"] || "An error occurred");
     }
 }
 
