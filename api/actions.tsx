@@ -17,7 +17,56 @@ class ActionApiWrapper {
         });
     }
 
-    // Placeholder for a generic GET request
+    // Track Day
+    async trackDayCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Monthly Reset
+    async monthlyResetCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Set Up Environment
+    async setUpEnvironmentCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Generic error handler (customize as needed)
+    private handleError(error: any): Error {
+        // Add custom error handling logic here
+        if (error.response) {
+            // Server responded with a status outside 2xx
+            console.error("ActionApi Error:", error.response.data);
+        } else if (error.request) {
+            // No response received
+            console.error("Network Error:", error.request);
+        } else {
+            // Error setting up the request
+            console.error("Error:", error.message);
+        }
+        return new Error(error.message || "An error occurred");
+    }
+}
+
+export default ActionApiWrapper;
+
+// Placeholder for a generic GET request
     // Uncomment and customize this method if needed
     /*
     async getExample(endpoint: string, params?: Record<string, any>): Promise<AxiosResponse<any>> {
@@ -68,22 +117,3 @@ class ActionApiWrapper {
         }
     }
     */
-
-    // Generic error handler (customize as needed)
-    private handleError(error: any): Error {
-        // Add custom error handling logic here
-        if (error.response) {
-            // Server responded with a status outside 2xx
-            console.error("ActionApi Error:", error.response.data);
-        } else if (error.request) {
-            // No response received
-            console.error("Network Error:", error.request);
-        } else {
-            // Error setting up the request
-            console.error("Error:", error.message);
-        }
-        return new Error(error.message || "An error occurred");
-    }
-}
-
-export default ActionApiWrapper;

@@ -17,7 +17,56 @@ class RewardApiWrapper {
         });
     }
 
-    // Placeholder for a generic GET request
+    // Create Reward
+    async createRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Delete Reward
+    async deleteRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Redeem Reward
+    async redeemRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
+    // Generic error handler (customize as needed)
+    private handleError(error: any): Error {
+        // Add custom error handling logic here
+        if (error.response) {
+            // Server responded with a status outside 2xx
+            console.error("RewardApi Error:", error.response.data);
+        } else if (error.request) {
+            // No response received
+            console.error("Network Error:", error.request);
+        } else {
+            // Error setting up the request
+            console.error("Error:", error.message);
+        }
+        return new Error(error.message || "An error occurred");
+    }
+}
+
+export default RewardApiWrapper;
+
+// Placeholder for a generic GET request
     // Uncomment and customize this method if needed
     /*
     async getExample(endpoint: string, params?: Record<string, any>): Promise<AxiosResponse<any>> {
@@ -68,22 +117,3 @@ class RewardApiWrapper {
         }
     }
     */
-
-    // Generic error handler (customize as needed)
-    private handleError(error: any): Error {
-        // Add custom error handling logic here
-        if (error.response) {
-            // Server responded with a status outside 2xx
-            console.error("RewardApi Error:", error.response.data);
-        } else if (error.request) {
-            // No response received
-            console.error("Network Error:", error.request);
-        } else {
-            // Error setting up the request
-            console.error("Error:", error.message);
-        }
-        return new Error(error.message || "An error occurred");
-    }
-}
-
-export default RewardApiWrapper;
