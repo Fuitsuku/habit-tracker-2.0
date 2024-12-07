@@ -11,7 +11,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 
-import PageHeader from "../components/PageHeader";
+import PageHeader from "@/app/components/PageHeader";
 
 interface RewardData {
   reward_name: string;

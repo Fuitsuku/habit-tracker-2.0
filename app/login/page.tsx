@@ -1,6 +1,6 @@
 //Imports start here
 import { Button } from "@/components/ui/button";
-import PageHeader from "../components/PageHeader";
+import PageHeader from "@/app/components/PageHeader";
 
 export default function LoginPage() {
     return (
