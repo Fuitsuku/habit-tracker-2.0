@@ -6,6 +6,7 @@ import PageHeader from "@/app/components/PageHeader";
 import { useState } from "react"; // For state management
 import ActionsApiWrapper from "@/api/actions"; 
 import { useRouter } from "next/navigation";
+import useUserProfile from '../components/UserProfile';
 
 // API Wrapper instance
 const actionApi = new ActionsApiWrapper({
@@ -16,6 +17,7 @@ export default function LoginPage() {
     const [username, setUsername] = useState(""); // State to store username
     const [error, setError] = useState(""); // State to store error messages
     const [success, setSuccess] = useState(false); // State for success message
+    const [profile, updateProfile] = useUserProfile();
     const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -25,12 +27,15 @@ export default function LoginPage() {
 
         try {
             const response = await actionApi.loginCall("/action/login", { "user-id": username });
+            const user_stats = response.data.payload;
             console.log("Successfully Logged In.")
+            await updateProfile('stats', user_stats);
             setSuccess(true); // Show success message
+            if (profile) {
+                console.log(profile.stats);
+            }
+            
             await sleep(1000);
-
-            // Update cache with user stats
-
             router.push("/home");
         } catch (err: any) {
             // Check if the error has a response from the backend
