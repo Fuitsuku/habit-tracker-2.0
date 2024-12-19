@@ -7,48 +7,91 @@ import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useState } from "react";
+import TasksApiWrapper from "@/api/tasks"; 
 import PageHeader from "../components/PageHeader";
 
+// API Wrapper instance
+const tasksApi = new TasksApiWrapper({
+  baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+});
+
+interface TMTaskData {
+  "task-name" : string;
+  "point-value": number;
+  "growth-factor": number;
+  "completed": boolean;
+  "task-id": string;
+  "day-streak": number;
+};
+
+interface NMTaskData {
+  "task-name" : string;
+  "point-value": number;
+  "growth-factor": number;
+  "task-id": string;
+};
+
+interface NMTaskDataLocal {
+  "task-name": string;
+  "point-value": number;
+  "growth-factor": number;
+};
+
 export default function TasksPage() {
-  const test_task_data = [
-    {
-      task_id: 1,
-      completion: false,
-      task_name: "Task 1",
-      points: 5,
-      day_streak: 1,
-    },
-    {
-      task_id: 2,
-      completion: false,
-      task_name: "Task 2",
-      points: 8,
-      day_streak: 1,
-    },
-  ];
-
-  interface TaskData {
-    task_name: string;
-    point_value: number;
-    growth_factor: number;
-  }
-
-  const [tasks, setTasks] = useState<TaskData[]>([{ task_name: "", point_value: 0, growth_factor: 0 }]);
-  const [newTask, setNewTask] = useState<TaskData>({ task_name: "Test Task 1", point_value: 10, growth_factor: 4 });
+  const username = JSON.parse(localStorage.getItem('stats'))['user-id'];
+  const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>(JSON.parse(localStorage.getItem('this-month-tasks')));
+  const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>(JSON.parse(localStorage.getItem('next-month-tasks')));
+  const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
 
   // Add a new task
-  const addTask = () => {
-    setTasks([...tasks, newTask]);
-    setNewTask({ task_name: "", point_value: 0, growth_factor: 0 });
+  const addTask = async () => {
+    const payload = {
+      "user-id" : username,
+      "task-data" : JSON.stringify(newNextMonthTask)
+    };
+
+    // Update Backend and Pull latest
+    const response = await tasksApi.createTaskCall("/task/create", payload);
+    const update_tasks_response = await tasksApi.getTasksCall("/task/get", {"user-id" : username})
+
+    // Parse Latest data
+    const updated_next_month_tasks_raw = update_tasks_response.data.payload.next_month_tasks['tasks'];
+    const updated_next_month_tasks = tasksApi.parseNMT(updated_next_month_tasks_raw);
+
+    // Update local copies & close drawer
+    setNextMonthTasks(updated_next_month_tasks);
+    localStorage.setItem('next-month-tasks', JSON.stringify(updated_next_month_tasks));
+    setNewNextMonthTask({ "task-name": "", "point-value": 0, "growth-factor": 0 });
     setAddDrawerOpen(false); // Close the drawer
   };
 
   // Delete the last task
-  const deleteTask = () => {
-    if (tasks.length > 0) {
-      setTasks(tasks.slice(0, -1));
+  const deleteTask = async () => {
+    if (nextMonthTasks.length > 0) {
+      const task_to_be_deleted = nextMonthTasks[nextMonthTasks.length - 1];
+      const payload = {
+        "user-id" : username,
+        "task-id" : task_to_be_deleted["task-id"]
+      };
+      const response = await tasksApi.deleteTaskCall("/task/delete", payload);
+
+      setNextMonthTasks(nextMonthTasks.slice(0, -1));
     }
+  };
+
+  const handleCheckboxChange = async (index: number, task_id:string) => {
+    const payload ={
+      "user-id" : username,
+      "task-id" : task_id
+    };
+    const response = await tasksApi.completeTaskCall("/task/complete", payload);
+    
+    setThisMonthTasks((prevTasks) =>
+      prevTasks.map((task, i) =>
+        i === index ? { ...task, "completed": !task["completed"] } : task
+      )
+    );
   };
 
   return (
@@ -75,14 +118,18 @@ export default function TasksPage() {
             <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none rounded-lg shadow-none">
               <Table className="min-w-full border-collapse border-none">
                 <TableBody>
-                  {test_task_data.map((task) => (
-                    <TableRow key={task.task_id} className="h-12 border-b border-white">
+                  {thisMonthTasks.map((task, index) => (
+                    <TableRow key={index + 1} className="h-12 border-b border-white">
                       <TableCell className="text-center text-white">
-                        <Checkbox checked={task.completion}></Checkbox>
+                        <input
+                          type="checkbox"
+                          checked={task["completed"]}
+                          onChange={() => handleCheckboxChange(index, task["task-id"])}
+                        />
                       </TableCell>
-                      <TableCell className="text-white">{task.task_name}</TableCell>
-                      <TableCell className="text-center text-white">{task.points}</TableCell>
-                      <TableCell className="text-center text-white">{task.day_streak}</TableCell>
+                      <TableCell className="text-white">{task["task-name"]}</TableCell>
+                      <TableCell className="text-center text-white">{task["point-value"]}</TableCell>
+                      <TableCell className="text-center text-white">{task["day-streak"]}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -97,13 +144,13 @@ export default function TasksPage() {
                 {/* Tasks Table */}
                 <table className="min-w-full border-collapse border-none">
                   <tbody>
-                    {tasks.map((task, index) => (
+                    {nextMonthTasks.map((task, index) => (
                       <tr key={index} className="h-24 border-b border-white">
                         <td colSpan={3} className="p-2 py-4">
                           <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
-                            <div className="text-white font-bold">{task.task_name}</div>
-                            <div className="text-white text-right">{task.point_value} Points</div>
-                            <div className="text-white text-right">.{task.growth_factor}X</div>
+                            <div className="text-white font-bold">{task["task-name"]}</div>
+                            <div className="text-white text-right">{task["point-value"]} Points</div>
+                            <div className="text-white text-right">.{task["growth-factor"]}X</div>
                           </div>
                         </td>
                       </tr>
@@ -129,23 +176,23 @@ export default function TasksPage() {
                         <input
                           type="text"
                           placeholder="Task Name"
-                          value={newTask.task_name}
-                          onChange={(e) => setNewTask({ ...newTask, task_name: e.target.value })}
+                          value={newNextMonthTask["task-name"]}
+                          onChange={(e) => setNewNextMonthTask({ ...newNextMonthTask, "task-name": e.target.value })}
                           className="w-full p-2 bg-black text-white rounded"
                         />
                         <input
                           type="number"
                           placeholder="Point Value"
-                          value={newTask.point_value}
-                          onChange={(e) => setNewTask({ ...newTask, point_value: parseInt(e.target.value) || 0 })}
+                          value={newNextMonthTask["point-value"]}
+                          onChange={(e) => setNewNextMonthTask({ ...newNextMonthTask, "point-value": parseInt(e.target.value) || 0 })}
                           className="w-full p-2 bg-black text-white rounded"
                         />
                         <input
                           type="number"
                           placeholder="Growth Factor"
-                          value={newTask.growth_factor}
+                          value={newNextMonthTask["growth-factor"]}
                           onChange={(e) =>
-                            setNewTask({ ...newTask, growth_factor: parseInt(e.target.value) || 0 })
+                            setNewNextMonthTask({ ...newNextMonthTask, "growth-factor": parseInt(e.target.value) || 0 })
                           }
                           className="w-full p-2 bg-black text-white rounded"
                         />
@@ -190,7 +237,8 @@ export default function TasksPage() {
                     <TabsContent value="current">
                         <div>
                             <div>Projected Gain:</div>
-                            <div>10 &#9650;</div>
+                            Feature Coming Soon.
+                            {/* <div>10 &#9650;</div> */}
                         </div>
                     </TabsContent>
                     <TabsContent value="setup">

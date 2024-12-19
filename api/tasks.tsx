@@ -17,11 +17,46 @@ class TaskApiWrapper {
         });
     }
 
+    // Parses this_month_task objects and returns it as a list of tasks
+    parseTMT(this_month_tasks_raw:object){
+        let i = 0;
+        let converted_task_list = [];
+        for (const key in this_month_tasks_raw) {
+            const current_task = this_month_tasks_raw[key];
+            converted_task_list[i] = {
+                "task-id" : key,
+                "completed" : current_task["completed"],
+                "day-streak" : current_task["day-streak"],
+                "growth-factor" : current_task["growth-factor"],
+                "point-value" : current_task["point-value"],
+                "task-name" : current_task["task-name"]
+            }
+            i++;
+        }
+        return converted_task_list;
+    };
+
+    // Parses next_month_task objects and returns it as a list of tasks
+    parseNMT(next_month_tasks_raw:object){
+        let i = 0;
+        let converted_task_list = [];
+        for (const key in next_month_tasks_raw) {
+            const current_task = next_month_tasks_raw[key];
+            converted_task_list[i] = {
+                "task-id" : key,
+                "growth-factor" : current_task["growth-factor"],
+                "point-value" : current_task["point-value"],
+                "task-name" : current_task["task-name"]
+            }
+            i++;
+        }
+        return converted_task_list;
+    };
+
     // Get Tasks
     async getTasksCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
             const response = await this.client.post(endpoint, data);
-            console.log(response);
             return response;
         } catch (error) {
             throw this.handleError(error);

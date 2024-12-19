@@ -20,13 +20,15 @@ export default function HomePage() {
 
         try {
             const response = await tasksApi.getTasksCall("/task/get", { "user-id": username });
-            const this_month_tasks = response.data.payload.this_month_tasks;
-            const next_month_tasks = response.data.payload.next_month_tasks;
+            const this_month_tasks_raw = response.data.payload.this_month_tasks['tasks'];
+            const next_month_tasks_raw = response.data.payload.next_month_tasks['tasks'];
             
-            parseTasks(this_month_tasks, next_month_tasks);
-            // localStorage.setItem('tasks', JSON.stringify(user_stats));
+            const this_month_tasks = tasksApi.parseTMT(this_month_tasks_raw);
+            localStorage.setItem('this-month-tasks', JSON.stringify(this_month_tasks));
+
+            const next_month_tasks = tasksApi.parseNMT(next_month_tasks_raw);
+            localStorage.setItem('next-month-tasks', JSON.stringify(next_month_tasks));
             
-            await sleep(1000);
             router.push("/tasks");
         } catch (err: any) {
             // Check if the error has a response from the backend
@@ -34,9 +36,7 @@ export default function HomePage() {
         }
     };
 
-    const parseTasks = (this_month_tasks:object, next_month_tasks:object) => {
-        
-    };
+    
     return (
         <div className="bg-zinc-900 flex justify-center h-screen p-10">
             <div className="space-y-6 w-full max-w-md">
