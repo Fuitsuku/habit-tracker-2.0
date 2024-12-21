@@ -4,16 +4,36 @@
 import { Button } from "@/components/ui/button"
 import PageHeader from '../components/PageHeader';
 import TasksApiWrapper from "@/api/tasks"; 
+import ActionApiWrapper from "@/api/actions";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // API Wrapper instance
 const tasksApi = new TasksApiWrapper({
     baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
 });
 
+// API Wrapper instance
+const actionApi = new ActionApiWrapper({
+    baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+  });
+
 export default function HomePage() {
     const router = useRouter();
-    const username = JSON.parse(localStorage.getItem('stats'))['user-id'];
+    const [username, setUsername] = useState<string | null>(null);
+    const [error, setError] = useState(""); // State to store error messages
+    const [success, setSuccess] = useState(false); // State for success message
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Access localStorage safely
+            const stats = localStorage.getItem("stats");
+            if (stats) {
+                const parsedStats = JSON.parse(stats);
+                setUsername(parsedStats["user-id"]);
+            }
+        }
+    }, []);
     
     const handleTaskNavi = async (e: React.FormEvent) => {
         e.preventDefault(); // Prevent default form submission
@@ -36,6 +56,29 @@ export default function HomePage() {
         }
     };
 
+    const trackDay = async () => {
+        setError(""); // Reset error message
+        setSuccess(false); // Reset success message
+        
+        try {
+            const payload = {
+                "user-id" : username
+            };
+    
+            const response = await actionApi.trackDayCall('/action/track', payload);    
+            console.log("Successfully Tracked Day.")
+
+            const response_update = await actionApi.loginCall("/action/login", { "user-id": username });
+            const user_stats = response_update.data.payload;
+            localStorage.setItem('stats', JSON.stringify(user_stats));
+            setSuccess(true); // Show success message
+            await sleep(2000);
+            setSuccess(false);
+        } catch (err: any) {
+            // Check if the error has a response from the backend
+            setError(err.message || "An error occurred while logging in."); // Fallback message
+        }
+    };
     
     return (
         <div className="bg-zinc-900 flex justify-center h-screen p-10">
@@ -61,6 +104,17 @@ export default function HomePage() {
                         </Button>
                     </li>
                 </ul>
+            </div>
+            {/* Footer Section */}
+            <div className="flex justify-between items-center mt-4">
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                {success && <p className="text-green-500 text-sm mt-2">Successfully Tracked Day!</p>}
+                <button
+                    onClick={() => trackDay()} // Reset rewards
+                    className="bg-black text-white text-xl p-3 rounded-lg w-40"
+                >
+                Track Day
+                </button>
             </div>
         </div>
     );

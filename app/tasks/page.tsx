@@ -8,10 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useState } from "react";
 import TasksApiWrapper from "@/api/tasks"; 
+import ActionApiWrapper from "@/api/actions";
 import PageHeader from "../components/PageHeader";
+import { useRouter } from "next/navigation";
 
 // API Wrapper instance
 const tasksApi = new TasksApiWrapper({
+  baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+});
+
+// API Wrapper instance
+const actionApi = new ActionApiWrapper({
   baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
 });
 
@@ -43,6 +50,12 @@ export default function TasksPage() {
   const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>(JSON.parse(localStorage.getItem('next-month-tasks')));
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
+  const router = useRouter();
+
+  // Handles back button navigation
+  const handleNaviBack = () => {
+    router.push("/home");
+  };
 
   // Add a new task
   const addTask = async () => {
@@ -92,6 +105,31 @@ export default function TasksPage() {
         i === index ? { ...task, "completed": !task["completed"] } : task
       )
     );
+  };
+
+  const setUpEnvironment = async () => {
+    const payload = {
+      "user-id" : username
+    };
+    const response = await actionApi.setUpEnvironmentCall("/action/setup", payload);
+    console.log(response);
+    try {
+      const response = await tasksApi.getTasksCall("/task/get", { "user-id": username });
+      const this_month_tasks_raw = response.data.payload.this_month_tasks['tasks'];
+      const next_month_tasks_raw = response.data.payload.next_month_tasks['tasks'];
+      
+      const this_month_tasks = tasksApi.parseTMT(this_month_tasks_raw);
+      localStorage.setItem('this-month-tasks', JSON.stringify(this_month_tasks));
+
+      const next_month_tasks = tasksApi.parseNMT(next_month_tasks_raw);
+      localStorage.setItem('next-month-tasks', JSON.stringify(next_month_tasks));
+
+      setThisMonthTasks(JSON.parse(localStorage.getItem("this-month-tasks")));
+      setNextMonthTasks(JSON.parse(localStorage.getItem("next-month-tasks")));
+    } catch (err: any) {
+        // Check if the error has a response from the backend
+        console.error('An error has occurred. Contact the Developer.');
+    }
   };
 
   return (
@@ -227,7 +265,10 @@ export default function TasksPage() {
         <div className="flex justify-between items-center mt-4">
                 {/* Back Button */}
                 <div className="text-left">
-                    <button className="bg-zinc-900 text-white border-none p-3 rounded w-30">
+                    <button 
+                      className="bg-zinc-900 text-white border-none p-3 rounded w-30"
+                      onClick={() => handleNaviBack()} // Reset rewards
+                    >
                         &lt;--- Back
                     </button>
                 </div>
@@ -243,9 +284,7 @@ export default function TasksPage() {
                     </TabsContent>
                     <TabsContent value="setup">
                         <button
-                            onClick={() => {
-                                console.log("Setup");
-                            }}
+                            onClick={() => setUpEnvironment()}
                             className="bg-black text-white text-xl p-3 rounded-lg w-40"
                         >
                             Refresh

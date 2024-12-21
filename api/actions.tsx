@@ -34,6 +34,7 @@ class ActionApiWrapper {
             const response = await this.client.post(endpoint, data);
             return response;
         } catch (error) {
+
             throw this.handleError(error);
         }
     }
