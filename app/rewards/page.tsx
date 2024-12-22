@@ -1,6 +1,6 @@
 "use client";
 // Imports start here
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -12,20 +12,58 @@ import {
 } from "@/components/ui/drawer";
 
 import PageHeader from "@/app/components/PageHeader";
+import RewardApiWrapper from "@/api/rewards";
+import { useRouter } from "next/navigation";
+import ActionApiWrapper from "@/api/actions";
 
 interface RewardData {
-  reward_name: string;
-  point_value: number;
+  "reward-id" : string;
+  "reward-name": string;
+  "point-value": number;
 }
 
+interface RewardDataLocal {
+  "reward-name": string;
+  "point-value": number;
+}
+
+// API Wrapper instance
+const rewardApi = new RewardApiWrapper({
+  baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+});
+
+// API Wrapper instance
+const actionApi = new ActionApiWrapper({
+  baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+});
+
 export default function RewardsPage() {
-  const [rewards, setRewards] = useState<RewardData[]>([]);
-  const [newReward, setNewReward] = useState<RewardData>({ reward_name: "", point_value: 0 });
+  const [rewards, setRewards] = useState<RewardData[]>(JSON.parse(localStorage.getItem("rewards") || "[]"));
+  const [username, setUsername] = useState<string | null>(null);
+  const [points, setPoints] = useState<number | null>(0);
+  const [newReward, setNewReward] = useState<RewardDataLocal>({ "reward-name": "", "point-value": 0 });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedReward, setSelectedReward] = useState<RewardData | null>(null);
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For + button drawer
+  const router = useRouter();
 
-  // TODO: Add a new reward
+  useEffect(() => {
+          if (typeof window !== "undefined") {
+              // Access localStorage safely
+              const stats = localStorage.getItem("stats");
+              if (stats) {
+                  const parsedStats = JSON.parse(stats);
+                  setPoints(parsedStats["points"]);
+                  setUsername(parsedStats["user-id"]);
+              }
+          }
+  }, []);
+
+  // Handles back button navigation
+  const handleNaviBack = () => {
+    router.push("/home");
+  };
+
   const addReward = async () => {
     const payload = {
       "user-id" : username,
@@ -37,18 +75,20 @@ export default function RewardsPage() {
     const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
 
     // Parse Latest data
+    const reward_list_raw = update_rewards_response.data.payload.rewards;
+    const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
 
     // Update local copies & close drawer
-    setRewards(the parsed and updated values);
-    localStorage.setItem('rewards', JSON.stringify(the parsed and updated values));
-    setNewReward({ reward_name: "", point_value: 0 });
+    setRewards(parsed_reward_list);
+    localStorage.setItem('rewards', JSON.stringify(parsed_reward_list));
+    setNewReward({ "reward-name": "", "point-value": 0 });
     setAddDrawerOpen(false); // Close the drawer
   };
 
-  // TODO: Delete the last reward
+  // Delete the last reward
   const deleteReward = async () => {
     if (rewards.length > 0) {
-      const reward_to_be_deleted = identify the reward data of the reward beign deleted;
+      const reward_to_be_deleted = rewards[rewards.length - 1];
       const payload = {
         "user-id" : username,
         "reward-id" : reward_to_be_deleted["reward-id"]
@@ -60,9 +100,39 @@ export default function RewardsPage() {
   };
 
   // TODO: Redeems the selected reward
-  const redeemReward = () => {
+  const redeemReward = async () => {
+    // Check if you have enough points
+    if (selectedReward["point-value"] <= points) {
+      const response = await rewardApi.redeemRewardCall("/reward/redeem", {"user-id" : username, "reward-id" : selectedReward["reward-id"]})
+      console.log(response);
 
+      // Pull latest
+      const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
+
+      // Parse Latest data
+      const reward_list_raw = update_rewards_response.data.payload.rewards;
+      const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
+
+      // Update local copies & close drawer
+      setRewards(parsed_reward_list);
+      localStorage.setItem('rewards', JSON.stringify(parsed_reward_list));
+
+      // Update point value
+      const update_response = await actionApi.loginCall("/action/login", { "user-id": username });
+      const user_stats = update_response.data.payload;
+      localStorage.setItem('stats', JSON.stringify(user_stats));
+      setPoints(user_stats["points"]);
+      setDrawerOpen(false);
+    } else {
+      console.log("You do not have enough points");
+      setDrawerOpen(false);
+    };
   };
+
+  const monthlyReset = async () => {
+    const response = await actionApi.monthlyResetCall("/action/reset", {"user-id" : username})
+    console.log(response);
+  }
 
   // Open the drawer with selected reward
   const openDrawer = (reward: RewardData) => {
@@ -85,8 +155,8 @@ export default function RewardsPage() {
               >
                 <td colSpan={2} className="p-2 py-4 px-10">
                   <div className="grid grid-cols-2 gap-4 h-full">
-                    <div className="text-white font-bold">{reward.reward_name}</div>
-                    <div className="text-white text-right">{reward.point_value} Points</div>
+                    <div className="text-white font-bold">{reward["reward-name"]}</div>
+                    <div className="text-white text-right">{reward["point-value"]} Points</div>
                   </div>
                 </td>
               </tr>
@@ -115,15 +185,15 @@ export default function RewardsPage() {
                 <input
                   type="text"
                   placeholder="Reward Name"
-                  value={newReward.reward_name}
-                  onChange={(e) => setNewReward({ ...newReward, reward_name: e.target.value })}
+                  value={newReward["reward-name"]}
+                  onChange={(e) => setNewReward({ ...newReward, "reward-name": e.target.value })}
                   className="w-full p-2 bg-black text-white rounded"
                 />
                 <input
                   type="number"
                   placeholder="Point Value"
-                  value={newReward.point_value}
-                  onChange={(e) => setNewReward({ ...newReward, point_value: parseInt(e.target.value) || 0 })}
+                  value={newReward["point-value"]}
+                  onChange={(e) => setNewReward({ ...newReward, "point-value": parseInt(e.target.value) || 0 })}
                   className="w-full p-2 bg-black text-white rounded"
                 />
               </div>
@@ -156,23 +226,34 @@ export default function RewardsPage() {
       <Drawer open={drawerOpen} onOpenChange={() => setDrawerOpen(false)}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>{selectedReward?.reward_name}</DrawerTitle>
+            <DrawerTitle>
+              {selectedReward ? selectedReward["reward-name"] : "No Reward Selected"}
+            </DrawerTitle>
             <DrawerDescription>
-              This reward costs {selectedReward?.point_value} points.
+              {selectedReward
+                ? `This reward costs ${selectedReward["point-value"]} points. You currently have ${points} points.`
+                : "Select a reward to view details."}
+              
             </DrawerDescription>
           </DrawerHeader>
           <div className="p-4">
-            <p>Redeem this reward if you have enough points. Click "Purchase" to confirm your redemption.</p>
+            {selectedReward ? (
+              <p>
+                Redeem this reward if you have enough points. Click "Purchase" to
+                confirm your redemption.
+              </p>
+            ) : (
+              <p>No reward selected.</p>
+            )}
           </div>
           <DrawerFooter>
-            <Button
-              onClick={() => {
-                alert(`Purchased ${selectedReward?.reward_name}!`);
-                setDrawerOpen(false);
-              }}
-            >
-              Purchase
-            </Button>
+            {selectedReward && (
+              <Button
+                onClick={redeemReward}
+              >
+                Purchase
+              </Button>
+            )}
             <Button variant="outline" onClick={() => setDrawerOpen(false)}>
               Cancel
             </Button>
@@ -182,12 +263,17 @@ export default function RewardsPage() {
 
       {/* Footer Section */}
       <div className="flex justify-between items-center mt-4">
-        <button className="bg-zinc-900 text-white border-none p-3 rounded w-30">&lt;--- Back</button>
+        <button 
+          className="bg-zinc-900 text-white border-none p-3 rounded w-30"
+          onClick={handleNaviBack}
+        >
+          &lt;--- Back
+        </button>
         <button
-          onClick={() => setRewards([])} // Reset rewards
+          onClick={monthlyReset} // Reset rewards
           className="bg-black text-white text-xl p-3 rounded-lg w-40"
         >
-          Reset
+          Cash Out
         </button>
       </div>
     </div>

@@ -17,6 +17,22 @@ class RewardApiWrapper {
         });
     }
 
+    // Parses reward_list objects and returns it as a list of reward
+    parseRewards(reward_list_raw:object){
+        let i = 0;
+        let converted_reward_list = [];
+        for (const key in reward_list_raw) {
+            const current_reward = JSON.parse(reward_list_raw[key]);
+            converted_reward_list[i] = {
+                "reward-id" : key,
+                "point-value" : current_reward["point-value"],
+                "reward-name" : current_reward["reward-name"]
+            }
+            i++;
+        }
+        return converted_reward_list;
+    };
+
     // Get Reward Data
     async getRewardsCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {

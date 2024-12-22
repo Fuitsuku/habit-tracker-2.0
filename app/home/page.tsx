@@ -68,8 +68,11 @@ export default function HomePage() {
         try {
             const response = await rewardApi.getRewardsCall("/reward/get", { "user-id": username });
             // Extract reward list from response
+            const reward_list_raw = response.data.payload.rewards;
             
             // parse and store reward information from retrieved data
+            const rewards = rewardApi.parseRewards(reward_list_raw);
+            localStorage.setItem("rewards", JSON.stringify(rewards));
             
             router.push("/rewards");
         } catch (err: any) {

@@ -21,7 +21,6 @@ class ActionApiWrapper {
     async loginCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
             const response = await this.client.post(endpoint, data);
-            console.log(response);
             return response;
         } catch (error) {
             throw this.handleError(error);

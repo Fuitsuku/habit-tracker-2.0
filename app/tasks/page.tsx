@@ -287,7 +287,7 @@ export default function TasksPage() {
                             onClick={() => setUpEnvironment()}
                             className="bg-black text-white text-xl p-3 rounded-lg w-40"
                         >
-                            Refresh
+                            Setup
                         </button>
                     </TabsContent>
                 </div>
