@@ -331,11 +331,17 @@ export default function TasksPage() {
 
                 {/* Conditional Footer Content */}
                 <div className="text-white text-right flex items-center">
-                    <TabsContent value="current">
-                        <div>
-                            <div>{projectedGain} &#9650;</div>
-                        </div>
-                    </TabsContent>
+                <TabsContent value="current">
+                  <div>
+                    <div
+                      style={{
+                        color: projectedGain >= 0 ? "green" : "red",
+                      }}
+                    >
+                      {projectedGain >= 0 ? `+${projectedGain}` : projectedGain} &#9650;
+                    </div>
+                  </div>
+                </TabsContent>
                     <TabsContent value="setup">
                         <button
                             onClick={() => setUpEnvironment()}

@@ -239,7 +239,7 @@ export default function RewardsPage() {
             </DrawerTitle>
             <DrawerDescription>
               {selectedReward
-                ? `This reward costs ${selectedReward["point-value"]} points. You currently have ${points} points.`
+                ? `This reward costs ${selectedReward["point-value"]} ▲. You currently have ${points} ▲.`
                 : "Select a reward to view details."}
               
             </DrawerDescription>
@@ -247,7 +247,7 @@ export default function RewardsPage() {
           <div className="p-4">
             {selectedReward ? (
               <p>
-                Redeem this reward if you have enough points. Click &quot;Purchase&quot; to
+                Click &quot;Purchase&quot; to
                 confirm your redemption.
               </p>
             ) : (
