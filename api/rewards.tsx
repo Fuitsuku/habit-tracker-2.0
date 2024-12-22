@@ -17,6 +17,16 @@ class RewardApiWrapper {
         });
     }
 
+    // Get Reward Data
+    async getRewardsCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
+        try {
+            const response = await this.client.post(endpoint, data);
+            return response;
+        } catch (error) {
+            throw this.handleError(error);
+        }
+    }
+
     // Create Reward
     async createRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {

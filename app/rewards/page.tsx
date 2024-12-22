@@ -25,18 +25,43 @@ export default function RewardsPage() {
   const [selectedReward, setSelectedReward] = useState<RewardData | null>(null);
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For + button drawer
 
-  // Add a new reward
-  const addReward = () => {
-    setRewards([...rewards, newReward]);
+  // TODO: Add a new reward
+  const addReward = async () => {
+    const payload = {
+      "user-id" : username,
+      "reward-data" : JSON.stringify(newReward)
+    };
+
+    // Update Backend and Pull latest
+    const response = await rewardApi.createRewardCall("/reward/create", payload);
+    const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
+
+    // Parse Latest data
+
+    // Update local copies & close drawer
+    setRewards(the parsed and updated values);
+    localStorage.setItem('rewards', JSON.stringify(the parsed and updated values));
     setNewReward({ reward_name: "", point_value: 0 });
     setAddDrawerOpen(false); // Close the drawer
   };
 
-  // Delete the last reward
-  const deleteReward = () => {
+  // TODO: Delete the last reward
+  const deleteReward = async () => {
     if (rewards.length > 0) {
+      const reward_to_be_deleted = identify the reward data of the reward beign deleted;
+      const payload = {
+        "user-id" : username,
+        "reward-id" : reward_to_be_deleted["reward-id"]
+      };
+      const response = await rewardApi.deleteRewardCall("/reward/delete", payload);
+
       setRewards(rewards.slice(0, -1));
     }
+  };
+
+  // TODO: Redeems the selected reward
+  const redeemReward = () => {
+
   };
 
   // Open the drawer with selected reward

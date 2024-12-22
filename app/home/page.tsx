@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import PageHeader from '../components/PageHeader';
 import TasksApiWrapper from "@/api/tasks"; 
 import ActionApiWrapper from "@/api/actions";
+import RewardApiWrapper from "@/api/rewards";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -17,6 +18,11 @@ const tasksApi = new TasksApiWrapper({
 const actionApi = new ActionApiWrapper({
     baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
   });
+
+// API Wrapper instance
+const rewardApi = new RewardApiWrapper({
+    baseURL: "https://pwsmmjqrh7.execute-api.us-west-2.amazonaws.com/production",
+});
 
 export default function HomePage() {
     const router = useRouter();
@@ -50,6 +56,22 @@ export default function HomePage() {
             localStorage.setItem('next-month-tasks', JSON.stringify(next_month_tasks));
             
             router.push("/tasks");
+        } catch (err: any) {
+            // Check if the error has a response from the backend
+            console.error('An error has occurred. Contact the Developer.');
+        }
+    };
+
+    const handleRewardNavi = async (e: React.FormEvent) => {
+        e.preventDefault(); // Prevent default form submission
+
+        try {
+            const response = await rewardApi.getRewardsCall("/reward/get", { "user-id": username });
+            // Extract reward list from response
+            
+            // parse and store reward information from retrieved data
+            
+            router.push("/rewards");
         } catch (err: any) {
             // Check if the error has a response from the backend
             console.error('An error has occurred. Contact the Developer.');
@@ -94,7 +116,9 @@ export default function HomePage() {
                         </Button>
                     </li>
                     <li>
-                        <Button className="bg-zinc-900 font-sans font-thin text-white text-4xl">
+                        <Button 
+                            className="bg-zinc-900 font-sans font-thin text-white text-4xl"
+                            onClick={handleRewardNavi}>
                             Rewards
                         </Button>
                     </li>
