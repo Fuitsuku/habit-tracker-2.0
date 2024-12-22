@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TasksApiWrapper from "@/api/tasks"; 
 import ActionApiWrapper from "@/api/actions";
 import PageHeader from "../components/PageHeader";
@@ -45,14 +45,35 @@ interface NMTaskDataLocal {
 };
 
 export default function TasksPage() {
-  const stats = localStorage.getItem('stats') || "{'user-id' : 'test_user}"
-  const username = JSON.parse(stats)['user-id'];
-  const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>(JSON.parse(localStorage.getItem('this-month-tasks') || "[]"));
-  const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>(JSON.parse(localStorage.getItem('next-month-tasks') || "[]"));
+  const [username, setUsername] = useState<string | null>(null);
+  const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>([]);
+  const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>([]);
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
   const router = useRouter();
 
+  useEffect(() => {
+            if (typeof window !== "undefined") {
+                // Access localStorage safely
+                const stats = localStorage.getItem("stats");
+                if (stats) {
+                    const parsedStats = JSON.parse(stats);
+                    setUsername(parsedStats["user-id"]);
+                }
+  
+                const storedTMT = localStorage.getItem("this-month-tasks");
+                if (storedTMT) {
+                  const parsedTMT = JSON.parse(storedTMT);
+                  setThisMonthTasks(parsedTMT);
+                }
+
+                const storedNMT = localStorage.getItem("next-month-tasks");
+                if (storedNMT) {
+                  const parsedNMT = JSON.parse(storedNMT);
+                  setNextMonthTasks(parsedNMT);
+                }
+            }
+    }, []);
   // Handles back button navigation
   const handleNaviBack = () => {
     router.push("/home");

@@ -38,7 +38,7 @@ const actionApi = new ActionApiWrapper({
 });
 
 export default function RewardsPage() {
-  const [rewards, setRewards] = useState<RewardData[]>(JSON.parse(localStorage.getItem("rewards") || "[]"));
+  const [rewards, setRewards] = useState<RewardData[]>([]);
   const [username, setUsername] = useState<string | null>(null);
   const [points, setPoints] = useState<number | null>(0);
   const [newReward, setNewReward] = useState<RewardDataLocal>({ "reward-name": "", "point-value": 0 });
@@ -55,6 +55,12 @@ export default function RewardsPage() {
                   const parsedStats = JSON.parse(stats);
                   setPoints(parsedStats["points"]);
                   setUsername(parsedStats["user-id"]);
+              }
+
+              const storedRewards = localStorage.getItem("rewards");
+              if (storedRewards) {
+                const parsedRewards = JSON.parse(storedRewards);
+                setRewards(parsedRewards);
               }
           }
   }, []);
