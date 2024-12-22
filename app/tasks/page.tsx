@@ -45,9 +45,10 @@ interface NMTaskDataLocal {
 };
 
 export default function TasksPage() {
-  const username = JSON.parse(localStorage.getItem('stats'))['user-id'];
-  const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>(JSON.parse(localStorage.getItem('this-month-tasks')));
-  const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>(JSON.parse(localStorage.getItem('next-month-tasks')));
+  const stats = localStorage.getItem('stats') || "{'user-id' : 'test_user}"
+  const username = JSON.parse(stats)['user-id'];
+  const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>(JSON.parse(localStorage.getItem('this-month-tasks') || "[]"));
+  const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>(JSON.parse(localStorage.getItem('next-month-tasks') || "[]"));
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
   const router = useRouter();
@@ -124,8 +125,8 @@ export default function TasksPage() {
       const next_month_tasks = tasksApi.parseNMT(next_month_tasks_raw);
       localStorage.setItem('next-month-tasks', JSON.stringify(next_month_tasks));
 
-      setThisMonthTasks(JSON.parse(localStorage.getItem("this-month-tasks")));
-      setNextMonthTasks(JSON.parse(localStorage.getItem("next-month-tasks")));
+      setThisMonthTasks(JSON.parse(localStorage.getItem("this-month-tasks") || "[]"));
+      setNextMonthTasks(JSON.parse(localStorage.getItem("next-month-tasks") || "[]"));
     } catch (err: any) {
         // Check if the error has a response from the backend
         console.error('An error has occurred. Contact the Developer.');
