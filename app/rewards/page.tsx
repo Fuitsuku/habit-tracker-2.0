@@ -239,7 +239,7 @@ export default function RewardsPage() {
           <div className="p-4">
             {selectedReward ? (
               <p>
-                Redeem this reward if you have enough points. Click "Purchase" to
+                Redeem this reward if you have enough points. Click &quot;Purchase&quot; to
                 confirm your redemption.
               </p>
             ) : (
