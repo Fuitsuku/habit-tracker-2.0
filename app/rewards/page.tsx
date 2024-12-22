@@ -48,21 +48,21 @@ export default function RewardsPage() {
   const router = useRouter();
 
   useEffect(() => {
-          if (typeof window !== "undefined") {
-              // Access localStorage safely
-              const stats = localStorage.getItem("stats");
-              if (stats) {
-                  const parsedStats = JSON.parse(stats);
-                  setPoints(parsedStats["points"]);
-                  setUsername(parsedStats["user-id"]);
-              }
+    if (typeof window !== "undefined") {
+        // Access localStorage safely
+        const stats = localStorage.getItem("stats");
+        if (stats) {
+            const parsedStats = JSON.parse(stats);
+            setPoints(parsedStats["points"]);
+            setUsername(parsedStats["user-id"]);
+        }
 
-              const storedRewards = localStorage.getItem("rewards");
-              if (storedRewards) {
-                const parsedRewards = JSON.parse(storedRewards);
-                setRewards(parsedRewards);
-              }
-          }
+        const storedRewards = localStorage.getItem("rewards");
+        if (storedRewards) {
+          const parsedRewards = JSON.parse(storedRewards);
+          setRewards(parsedRewards);
+        }
+    }
   }, []);
 
   // Handles back button navigation

@@ -53,27 +53,28 @@ export default function TasksPage() {
   const router = useRouter();
 
   useEffect(() => {
-            if (typeof window !== "undefined") {
-                // Access localStorage safely
-                const stats = localStorage.getItem("stats");
-                if (stats) {
-                    const parsedStats = JSON.parse(stats);
-                    setUsername(parsedStats["user-id"]);
-                }
-  
-                const storedTMT = localStorage.getItem("this-month-tasks");
-                if (storedTMT) {
-                  const parsedTMT = JSON.parse(storedTMT);
-                  setThisMonthTasks(parsedTMT);
-                }
+    if (typeof window !== "undefined") {
+        // Access localStorage safely
+        const stats = localStorage.getItem("stats");
+        if (stats) {
+          const parsedStats = JSON.parse(stats);
+          setUsername(parsedStats["user-id"]);
+        }
 
-                const storedNMT = localStorage.getItem("next-month-tasks");
-                if (storedNMT) {
-                  const parsedNMT = JSON.parse(storedNMT);
-                  setNextMonthTasks(parsedNMT);
-                }
-            }
-    }, []);
+        const storedTMT = localStorage.getItem("this-month-tasks");
+        if (storedTMT) {
+          const parsedTMT = JSON.parse(storedTMT);
+          setThisMonthTasks(parsedTMT);
+        }
+
+        const storedNMT = localStorage.getItem("next-month-tasks");
+        if (storedNMT) {
+          const parsedNMT = JSON.parse(storedNMT);
+          setNextMonthTasks(parsedNMT);
+        }
+    }
+  }, []);
+  
   // Handles back button navigation
   const handleNaviBack = () => {
     router.push("/home");
