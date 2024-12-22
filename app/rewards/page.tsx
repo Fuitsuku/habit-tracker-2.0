@@ -275,7 +275,7 @@ export default function RewardsPage() {
           className="bg-zinc-900 text-white border-none p-3 rounded w-30"
           onClick={handleNaviBack}
         >
-          &lt;--- Back
+          &lt;-- Back
         </button>
         <button
           onClick={monthlyReset} // Reset rewards

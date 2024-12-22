@@ -74,7 +74,7 @@ export default function TasksPage() {
         }
     }
   }, []);
-  
+
   // Handles back button navigation
   const handleNaviBack = () => {
     router.push("/home");
@@ -292,7 +292,7 @@ export default function TasksPage() {
                       className="bg-zinc-900 text-white border-none p-3 rounded w-30"
                       onClick={() => handleNaviBack()} // Reset rewards
                     >
-                        &lt;--- Back
+                        &lt;-- Back
                     </button>
                 </div>
 
