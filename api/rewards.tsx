@@ -6,6 +6,14 @@ interface RewardApiConfig {
     headers?: Record<string, string>; // Optional: Default headers
 }
 
+type Reward = {
+    "point-value" : number;
+    "reward-name" : string;
+    "reward-id" : string;
+};
+
+type RewardList = Record<string, Reward>;
+
 class RewardApiWrapper {
     private client: AxiosInstance;
 
@@ -18,9 +26,9 @@ class RewardApiWrapper {
     }
 
     // Parses reward_list objects and returns it as a list of reward
-    parseRewards(reward_list_raw:object){
+    parseRewards(reward_list_raw:RewardList): Reward[]{
         let i = 0;
-        let converted_reward_list = [];
+        let converted_reward_list:Reward[] = [];
         for (const key in reward_list_raw) {
             const current_reward = reward_list_raw[key];
             converted_reward_list[i] = {

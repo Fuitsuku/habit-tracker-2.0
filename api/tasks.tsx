@@ -6,6 +6,25 @@ interface TaskApiConfig {
     headers?: Record<string, string>; // Optional: Default headers
 }
 
+type CurrentTask = {
+    "task-name" : string;
+    "point-value": number;
+    "growth-factor": number;
+    "completed": boolean;
+    "task-id": string;
+    "day-streak": number;
+};
+
+type FutureTask = {
+    "task-name" : string;
+    "point-value": number;
+    "growth-factor": number;
+    "task-id": string;
+};
+
+type CurrentTaskList = Record<string, CurrentTask>;
+type FutureTaskList = Record<string, FutureTask>;
+
 class TaskApiWrapper {
     private client: AxiosInstance;
 
@@ -18,9 +37,9 @@ class TaskApiWrapper {
     }
 
     // Parses this_month_task objects and returns it as a list of tasks
-    parseTMT(this_month_tasks_raw:object){
+    parseTMT(this_month_tasks_raw:CurrentTaskList):CurrentTask[]{
         let i = 0;
-        let converted_task_list = [];
+        let converted_task_list:CurrentTask[] = [];
         for (const key in this_month_tasks_raw) {
             const current_task = this_month_tasks_raw[key];
             converted_task_list[i] = {
@@ -37,9 +56,9 @@ class TaskApiWrapper {
     };
 
     // Parses next_month_task objects and returns it as a list of tasks
-    parseNMT(next_month_tasks_raw:object){
+    parseNMT(next_month_tasks_raw:FutureTaskList):FutureTask[]{
         let i = 0;
-        let converted_task_list = [];
+        let converted_task_list:FutureTask[] = [];
         for (const key in next_month_tasks_raw) {
             const current_task = next_month_tasks_raw[key];
             converted_task_list[i] = {

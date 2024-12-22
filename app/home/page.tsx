@@ -49,7 +49,6 @@ export default function HomePage() {
             const this_month_tasks_raw = response.data.payload.this_month_tasks;
             const next_month_tasks_raw = response.data.payload.next_month_tasks;
             
-            console.log(this_month_tasks_raw);
             const this_month_tasks = tasksApi.parseTMT(this_month_tasks_raw);
             localStorage.setItem('this-month-tasks', JSON.stringify(this_month_tasks));
 
