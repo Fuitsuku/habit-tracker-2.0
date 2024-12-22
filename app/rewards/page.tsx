@@ -102,30 +102,32 @@ export default function RewardsPage() {
   // TODO: Redeems the selected reward
   const redeemReward = async () => {
     // Check if you have enough points
-    if (selectedReward["point-value"] <= points) {
-      const response = await rewardApi.redeemRewardCall("/reward/redeem", {"user-id" : username, "reward-id" : selectedReward["reward-id"]})
-      console.log(response);
+    if (selectedReward && points) {
+      if (selectedReward["point-value"] <= points) {
+        const response = await rewardApi.redeemRewardCall("/reward/redeem", {"user-id" : username, "reward-id" : selectedReward["reward-id"]})
+        console.log(response);
 
-      // Pull latest
-      const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
+        // Pull latest
+        const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
 
-      // Parse Latest data
-      const reward_list_raw = update_rewards_response.data.payload.rewards;
-      const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
+        // Parse Latest data
+        const reward_list_raw = update_rewards_response.data.payload.rewards;
+        const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
 
-      // Update local copies & close drawer
-      setRewards(parsed_reward_list);
-      localStorage.setItem('rewards', JSON.stringify(parsed_reward_list));
+        // Update local copies & close drawer
+        setRewards(parsed_reward_list);
+        localStorage.setItem('rewards', JSON.stringify(parsed_reward_list));
 
-      // Update point value
-      const update_response = await actionApi.loginCall("/action/login", { "user-id": username });
-      const user_stats = update_response.data.payload;
-      localStorage.setItem('stats', JSON.stringify(user_stats));
-      setPoints(user_stats["points"]);
-      setDrawerOpen(false);
-    } else {
-      console.log("You do not have enough points");
-      setDrawerOpen(false);
+        // Update point value
+        const update_response = await actionApi.loginCall("/action/login", { "user-id": username });
+        const user_stats = update_response.data.payload;
+        localStorage.setItem('stats', JSON.stringify(user_stats));
+        setPoints(user_stats["points"]);
+        setDrawerOpen(false);
+      } else {
+        console.log("You do not have enough points");
+        setDrawerOpen(false);
+      };
     };
   };
 
