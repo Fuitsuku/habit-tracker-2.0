@@ -48,6 +48,9 @@ export default function TasksPage() {
   const [username, setUsername] = useState<string | null>(null);
   const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>([]);
   const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>([]);
+  const [projectedGain,setProjectedGain] = useState<number>(0);
+  const [negation, setNegation] = useState<number>(0);
+  const [daysSinceReset, setDaysSinceReset] = useState<number>(0);
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
   const router = useRouter();
@@ -59,6 +62,8 @@ export default function TasksPage() {
         if (stats) {
           const parsedStats = JSON.parse(stats);
           setUsername(parsedStats["user-id"]);
+          setDaysSinceReset(parsedStats["days-since-reset"]);
+          setNegation(parsedStats["negation"]);
         }
 
         const storedTMT = localStorage.getItem("this-month-tasks");
@@ -74,6 +79,32 @@ export default function TasksPage() {
         }
     }
   }, []);
+
+  useEffect(() => {
+    if (thisMonthTasks.length > 0 && daysSinceReset > 0) {
+      updateProjectedGain();
+    }
+  }, [thisMonthTasks, daysSinceReset, negation]);
+
+  // Updates projected gain
+  const updateProjectedGain = () => {
+    let projected_delta = 0;
+    let current_task = null;
+    let completed_minimum = false;
+    for (const task_index in thisMonthTasks) {
+      current_task = thisMonthTasks[task_index];
+      if (current_task["completed"]) {
+        completed_minimum = true;
+        projected_delta += current_task["point-value"];
+      };
+    }
+
+    if (completed_minimum) {
+      setProjectedGain(Math.floor(projected_delta / daysSinceReset));
+    } else {
+      setProjectedGain(Math.floor(negation / daysSinceReset));
+    };
+  }
 
   // Handles back button navigation
   const handleNaviBack = () => {
@@ -122,6 +153,8 @@ export default function TasksPage() {
       "task-id" : task_id
     };
     const response = await tasksApi.completeTaskCall("/task/complete", payload);
+
+    updateProjectedGain();
     
     setThisMonthTasks((prevTasks) =>
       prevTasks.map((task, i) =>
@@ -290,7 +323,7 @@ export default function TasksPage() {
                 <div className="text-left">
                     <button 
                       className="bg-zinc-900 text-white border-none p-3 rounded w-30"
-                      onClick={() => handleNaviBack()} // Reset rewards
+                      onClick={handleNaviBack} // Reset rewards
                     >
                         &lt;-- Back
                     </button>
@@ -300,9 +333,7 @@ export default function TasksPage() {
                 <div className="text-white text-right flex items-center">
                     <TabsContent value="current">
                         <div>
-                            <div>Projected Gain:</div>
-                            Feature Coming Soon.
-                            {/* <div>10 &#9650;</div> */}
+                            <div>{projectedGain} &#9650;</div>
                         </div>
                     </TabsContent>
                     <TabsContent value="setup">
