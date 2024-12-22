@@ -46,9 +46,10 @@ export default function HomePage() {
 
         try {
             const response = await tasksApi.getTasksCall("/task/get", { "user-id": username });
-            const this_month_tasks_raw = response.data.payload.this_month_tasks['tasks'];
-            const next_month_tasks_raw = response.data.payload.next_month_tasks['tasks'];
+            const this_month_tasks_raw = response.data.payload.this_month_tasks;
+            const next_month_tasks_raw = response.data.payload.next_month_tasks;
             
+            console.log(this_month_tasks_raw);
             const this_month_tasks = tasksApi.parseTMT(this_month_tasks_raw);
             localStorage.setItem('this-month-tasks', JSON.stringify(this_month_tasks));
 
@@ -67,9 +68,10 @@ export default function HomePage() {
 
         try {
             const response = await rewardApi.getRewardsCall("/reward/get", { "user-id": username });
+            console.log(response);
             // Extract reward list from response
             const reward_list_raw = response.data.payload.rewards;
-            
+            console.log(reward_list_raw);
             // parse and store reward information from retrieved data
             const rewards = rewardApi.parseRewards(reward_list_raw);
             localStorage.setItem("rewards", JSON.stringify(rewards));

@@ -22,7 +22,7 @@ class RewardApiWrapper {
         let i = 0;
         let converted_reward_list = [];
         for (const key in reward_list_raw) {
-            const current_reward = JSON.parse(reward_list_raw[key]);
+            const current_reward = reward_list_raw[key];
             converted_reward_list[i] = {
                 "reward-id" : key,
                 "point-value" : current_reward["point-value"],

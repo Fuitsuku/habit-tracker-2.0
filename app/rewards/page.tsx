@@ -76,6 +76,7 @@ export default function RewardsPage() {
 
     // Parse Latest data
     const reward_list_raw = update_rewards_response.data.payload.rewards;
+    console.log(reward_list_raw);
     const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
 
     // Update local copies & close drawer

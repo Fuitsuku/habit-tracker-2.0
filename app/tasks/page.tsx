@@ -69,7 +69,7 @@ export default function TasksPage() {
     const update_tasks_response = await tasksApi.getTasksCall("/task/get", {"user-id" : username})
 
     // Parse Latest data
-    const updated_next_month_tasks_raw = update_tasks_response.data.payload.next_month_tasks['tasks'];
+    const updated_next_month_tasks_raw = update_tasks_response.data.payload.next_month_tasks;
     const updated_next_month_tasks = tasksApi.parseNMT(updated_next_month_tasks_raw);
 
     // Update local copies & close drawer
@@ -115,8 +115,8 @@ export default function TasksPage() {
     console.log(response);
     try {
       const response = await tasksApi.getTasksCall("/task/get", { "user-id": username });
-      const this_month_tasks_raw = response.data.payload.this_month_tasks['tasks'];
-      const next_month_tasks_raw = response.data.payload.next_month_tasks['tasks'];
+      const this_month_tasks_raw = response.data.payload.this_month_tasks;
+      const next_month_tasks_raw = response.data.payload.next_month_tasks;
       
       const this_month_tasks = tasksApi.parseTMT(this_month_tasks_raw);
       localStorage.setItem('this-month-tasks', JSON.stringify(this_month_tasks));
