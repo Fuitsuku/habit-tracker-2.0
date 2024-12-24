@@ -93,15 +93,24 @@ export default function RewardsPage() {
 
   // Delete the last reward
   const deleteReward = async () => {
-    if (rewards.length > 0) {
-      const reward_to_be_deleted = rewards[rewards.length - 1];
+    if (rewards.length > 0 && selectedReward) {
       const payload = {
         "user-id" : username,
-        "reward-id" : reward_to_be_deleted["reward-id"]
+        "reward-id" : selectedReward["reward-id"]
       };
       const response = await rewardApi.deleteRewardCall("/reward/delete", payload);
 
-      setRewards(rewards.slice(0, -1));
+      // Pull latest
+      const update_rewards_response = await rewardApi.getRewardsCall("/reward/get", {"user-id" : username})
+
+      // Parse Latest data
+      const reward_list_raw = update_rewards_response.data.payload.rewards;
+      const parsed_reward_list = rewardApi.parseRewards(reward_list_raw);
+
+      // Update local copies & close drawer
+      setRewards(parsed_reward_list);
+      localStorage.setItem('rewards', JSON.stringify(parsed_reward_list));
+      setDrawerOpen(false);
     }
   };
 
@@ -185,27 +194,33 @@ export default function RewardsPage() {
             <DrawerContent className="bg-[#202020]">
               <DrawerHeader>
                 <DrawerTitle className="text-white text-lg">Add New Reward</DrawerTitle>
-                <DrawerDescription>
-                  Enter the name and point value of the new reward.
-                </DrawerDescription>
               </DrawerHeader>
-              <div className="p-4 bg-[#202020] space-y-4">
-                <input
-                  type="text"
-                  placeholder="Reward Name"
-                  value={newReward["reward-name"]}
-                  onChange={(e) => setNewReward({ ...newReward, "reward-name": e.target.value })}
-                  className="w-full p-2 bg-black text-white rounded"
-                />
-                <input
-                  type="number"
-                  placeholder="Point Value"
-                  value={newReward["point-value"]}
-                  onChange={(e) => setNewReward({ ...newReward, "point-value": parseInt(e.target.value) || 0 })}
-                  className="w-full p-2 bg-black text-white rounded"
-                />
+              <div className="p-4 space-y-4">
+                {/* Reward Name Field */}
+                <div className="space-y-1">
+                  <label className="block text-sm text-gray-400">Reward Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter a descriptive name."
+                    value={newReward["reward-name"]}
+                    onChange={(e) => setNewReward({ ...newReward, "reward-name": e.target.value })}
+                    className="w-full p-2 bg-black text-white rounded focus:ring focus:ring-blue-500"
+                  />
+                </div>
+
+                {/* Price Field */}
+                <div className="space-y-1">
+                  <label className="block text-sm text-gray-400">Price</label>
+                  <input
+                    type="number"
+                    placeholder="Point Value"
+                    value={newReward["point-value"]}
+                    onChange={(e) => setNewReward({ ...newReward, "point-value": parseInt(e.target.value) || 0 })}
+                    className="w-full p-2 bg-black text-white rounded focus:ring focus:ring-blue-500"
+                  />
+                </div>
               </div>
-              <DrawerFooter>
+              <DrawerFooter className="flex justify-end space-x-2">
                 <Button onClick={addReward} className="bg-black text-white">
                   Add Reward
                 </Button>
@@ -220,13 +235,6 @@ export default function RewardsPage() {
             </DrawerContent>
           </Drawer>
 
-          {/* Delete Reward Button */}
-          <button
-            onClick={deleteReward}
-            className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
-          >
-            -
-          </button>
         </div>
       </div>
 
@@ -264,6 +272,12 @@ export default function RewardsPage() {
             )}
             <Button variant="outline" onClick={() => setDrawerOpen(false)}>
               Cancel
+            </Button>
+            <Button
+              onClick={(deleteReward)}
+              className="bg-red-500 text-white"
+            >
+              Delete
             </Button>
           </DrawerFooter>
         </DrawerContent>

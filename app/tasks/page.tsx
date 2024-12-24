@@ -134,16 +134,15 @@ export default function TasksPage() {
   };
 
   // Delete the last task
-  const deleteTask = async () => {
+  const deleteTask = async (index:number) => {
     if (nextMonthTasks.length > 0) {
-      const task_to_be_deleted = nextMonthTasks[nextMonthTasks.length - 1];
+      const task_to_be_deleted = nextMonthTasks[index];
       const payload = {
         "user-id" : username,
         "task-id" : task_to_be_deleted["task-id"]
       };
       const response = await tasksApi.deleteTaskCall("/task/delete", payload);
-
-      setNextMonthTasks(nextMonthTasks.slice(0, -1));
+      setNextMonthTasks(nextMonthTasks.filter((_, i) => i !== index));
     }
   };
 
@@ -211,12 +210,21 @@ export default function TasksPage() {
           <Card className="border-none shadow-none">
             <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none rounded-lg shadow-none">
               <Table className="min-w-full border-collapse border-none">
+              <thead>
+                <TableRow className="h-6 border-b border-white">
+                  <TableCell className="text-center  text-xs text-white font-semibold"></TableCell>
+                  <TableCell className="text-white text-xs font-semibold">Task Name</TableCell>
+                  <TableCell className="text-center text-xs text-white font-semibold">Point Value</TableCell>
+                  <TableCell className="text-center text-xs text-white font-semibold">Day Streak</TableCell>
+                </TableRow>
+              </thead>
                 <TableBody>
                   {thisMonthTasks.map((task, index) => (
-                    <TableRow key={index + 1} className="h-12 border-b border-white">
+                    <TableRow key={index + 1} className="h-6 border-b border-white">
                       <TableCell className="text-center text-white">
                         <input
                           type="checkbox"
+                          className="w-4 h-4 cursor-pointer"
                           checked={task["completed"]}
                           onChange={() => handleCheckboxChange(index, task["task-id"])}
                         />
@@ -239,20 +247,27 @@ export default function TasksPage() {
                 <table className="min-w-full border-collapse border-none">
                   <tbody>
                     {nextMonthTasks.map((task, index) => (
-                      <tr key={index} className="h-24 border-b border-white">
+                      <tr key={index} className="h-6 border-b border-white">
                         <td colSpan={3} className="p-2 py-4">
-                          <div className="grid grid-cols-3 grid-rows-[1fr,1fr] gap-4 h-full">
+                          <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 h-6">
                             <div className="text-white font-bold">{task["task-name"]}</div>
-                            <div className="text-white text-right">{task["point-value"]} Points</div>
-                            <div className="text-white text-right">.{task["growth-factor"]}X</div>
+                            <div className="text-white text-right text-sm">{task["point-value"]} Points</div>
+                            <div className="text-white text-right text-sm">{task["growth-factor"]}X</div>
                           </div>
+                        </td>
+                        <td className="text-right">
+                          <button
+                            onClick={() => deleteTask(index)}
+                            className="bg-red-500 text-white text-sm p-2 rounded-lg"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-
-                {/* Add Task and Delete Buttons */}
+                {/* Add Task and Global Delete Buttons */}
                 <div className="flex justify-center mt-4 space-x-4">
                   {/* Add Task Drawer */}
                   <Button
@@ -266,30 +281,54 @@ export default function TasksPage() {
                       <DrawerHeader>
                         <DrawerTitle className="text-white text-lg">Add New Task</DrawerTitle>
                       </DrawerHeader>
-                      <div className="p-4 space-y-4">
-                        <input
-                          type="text"
-                          placeholder="Task Name"
-                          value={newNextMonthTask["task-name"]}
-                          onChange={(e) => setNewNextMonthTask({ ...newNextMonthTask, "task-name": e.target.value })}
-                          className="w-full p-2 bg-black text-white rounded"
-                        />
-                        <input
-                          type="number"
-                          placeholder="Point Value"
-                          value={newNextMonthTask["point-value"]}
-                          onChange={(e) => setNewNextMonthTask({ ...newNextMonthTask, "point-value": parseInt(e.target.value) || 0 })}
-                          className="w-full p-2 bg-black text-white rounded"
-                        />
-                        <input
-                          type="number"
-                          placeholder="Growth Factor"
-                          value={newNextMonthTask["growth-factor"]}
-                          onChange={(e) =>
-                            setNewNextMonthTask({ ...newNextMonthTask, "growth-factor": parseInt(e.target.value) || 0 })
-                          }
-                          className="w-full p-2 bg-black text-white rounded"
-                        />
+                      <div className="p-4 space-y-6">
+                        {/* Task Name Field */}
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-1">Task Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter a descriptive task name"
+                            value={newNextMonthTask["task-name"]}
+                            onChange={(e) =>
+                              setNewNextMonthTask({ ...newNextMonthTask, "task-name": e.target.value })
+                            }
+                            className="w-full p-2 bg-black text-white rounded focus:ring focus:ring-blue-500"
+                          />
+                        </div>
+
+                        {/* Point Value Field */}
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-1">Point Value [-100,100]</label>
+                          <input
+                            type="number"
+                            placeholder="E.g., 10"
+                            value={newNextMonthTask["point-value"]}
+                            onChange={(e) =>
+                              setNewNextMonthTask({ ...newNextMonthTask, "point-value": parseInt(e.target.value) || 0 })
+                            }
+                            className="w-full p-2 bg-black text-white rounded focus:ring focus:ring-blue-500"
+                          />
+                          <small className="block text-xs text-gray-500 mt-1">
+                            Assign a point value to the task (higher is more rewarding).
+                          </small>
+                        </div>
+
+                        {/* Growth Factor Field */}
+                        <div>
+                          <label className="block text-sm text-gray-400 mb-1">Growth Factor [1,10]</label>
+                          <input
+                            type="number"
+                            placeholder="E.g., 1.5"
+                            value={newNextMonthTask["growth-factor"]}
+                            onChange={(e) =>
+                              setNewNextMonthTask({ ...newNextMonthTask, "growth-factor": parseFloat(e.target.value) || 0 })
+                            }
+                            className="w-full p-2 bg-black text-white rounded focus:ring focus:ring-blue-500"
+                          />
+                          <small className="block text-xs text-gray-500 mt-1">
+                            Indicate the growth rate multiplier for task value.
+                          </small>
+                        </div>
                       </div>
                       <DrawerFooter>
                         <Button onClick={addTask} className="bg-black text-white">
@@ -305,53 +344,45 @@ export default function TasksPage() {
                       </DrawerFooter>
                     </DrawerContent>
                   </Drawer>
-
-                  {/* Delete Task Button */}
-                  <button
-                    onClick={deleteTask}
-                    className="bg-red-500 text-white text-lg p-4 rounded-full w-14 h-2 flex items-center justify-center"
-                  >
-                    -
-                  </button>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
         <div className="flex justify-between items-center mt-4">
-                {/* Back Button */}
-                <div className="text-left">
-                    <button 
-                      className="bg-zinc-900 text-white border-none p-3 rounded w-30"
-                      onClick={handleNaviBack} // Reset rewards
-                    >
-                        &lt;-- Back
-                    </button>
-                </div>
+          {/* Back Button */}
+          <div className="text-left">
+              <button 
+                className="bg-zinc-900 text-white border-none p-3 rounded w-30"
+                onClick={handleNaviBack} // Reset rewards
+              >
+                  &lt;-- Back
+              </button>
+          </div>
 
-                {/* Conditional Footer Content */}
-                <div className="text-white text-right flex items-center">
-                <TabsContent value="current">
-                  <div>
-                    <div
-                      style={{
-                        color: projectedGain >= 0 ? "green" : "red",
-                      }}
-                    >
-                      {projectedGain >= 0 ? `+${projectedGain}` : projectedGain} &#9650;
-                    </div>
-                  </div>
-                </TabsContent>
-                    <TabsContent value="setup">
-                        <button
-                            onClick={() => setUpEnvironment()}
-                            className="bg-black text-white text-xl p-3 rounded-lg w-40"
-                        >
-                            Setup
-                        </button>
-                    </TabsContent>
-                </div>
+          {/* Conditional Footer Content */}
+          <div className="text-white text-right flex items-center">
+          <TabsContent value="current">
+            <div>
+              <div
+                style={{
+                  color: projectedGain >= 0 ? "green" : "red",
+                }}
+              >
+                {projectedGain >= 0 ? `+${projectedGain}` : projectedGain} &#9650;
+              </div>
             </div>
+          </TabsContent>
+              <TabsContent value="setup">
+                  <button
+                      onClick={() => setUpEnvironment()}
+                      className="bg-black text-white text-xl p-3 rounded-lg w-40"
+                  >
+                      Setup
+                  </button>
+              </TabsContent>
+          </div>
+      </div>
       </Tabs>
       
     </div>

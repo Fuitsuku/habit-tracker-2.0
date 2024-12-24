@@ -27,7 +27,7 @@ export default function RegisterPage() {
             console.log("Account created")
             setSuccess(true); // Show success message
             await sleep(1000);
-            router.push("/login");
+            router.push("/");
         } catch (err: any) {
             // Check if the error has a response from the backend
             setError(err.message || "An error occurred while creating the account."); // Fallback message
