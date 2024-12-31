@@ -64,18 +64,24 @@ export default function TasksPage() {
           setUsername(parsedStats["user-id"]);
           setDaysSinceReset(parsedStats["days-since-reset"]);
           setNegation(parsedStats["negation"]);
+        } else {
+          router.push("/");
         }
 
         const storedTMT = localStorage.getItem("this-month-tasks");
         if (storedTMT) {
           const parsedTMT = JSON.parse(storedTMT);
           setThisMonthTasks(parsedTMT);
+        } else {
+          router.push("/");
         }
 
         const storedNMT = localStorage.getItem("next-month-tasks");
         if (storedNMT) {
           const parsedNMT = JSON.parse(storedNMT);
           setNextMonthTasks(parsedNMT);
+        } else {
+          router.push("/");
         }
     }
   }, []);

@@ -55,12 +55,16 @@ export default function RewardsPage() {
             const parsedStats = JSON.parse(stats);
             setPoints(parsedStats["points"]);
             setUsername(parsedStats["user-id"]);
+        } else {
+          router.push("/");
         }
 
         const storedRewards = localStorage.getItem("rewards");
         if (storedRewards) {
           const parsedRewards = JSON.parse(storedRewards);
           setRewards(parsedRewards);
+        } else {
+          router.push("/");
         }
     }
   }, []);

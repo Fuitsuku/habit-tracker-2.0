@@ -37,6 +37,8 @@ export default function HomePage() {
             if (stats) {
                 const parsedStats = JSON.parse(stats);
                 setUsername(parsedStats["user-id"]);
+            } else {
+                router.push("/");
             }
         }
     }, []);
