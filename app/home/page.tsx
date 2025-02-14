@@ -84,6 +84,10 @@ export default function HomePage() {
         }
     };
 
+    const handleStatsNavi = async (e: React.FormEvent) => {
+        router.push("/stats");
+    };
+
     const trackDay = async () => {
         setError(""); // Reset error message
         setSuccess(false); // Reset success message
@@ -129,7 +133,9 @@ export default function HomePage() {
                         </Button>
                     </li>
                     <li>
-                        <Button className="bg-zinc-900 font-sans font-thin text-white text-4xl">
+                        <Button 
+                            className="bg-zinc-900 font-sans font-thin text-white text-4xl"
+                            onClick={handleStatsNavi}>
                             Stats
                         </Button>
                     </li>

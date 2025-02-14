@@ -2,7 +2,6 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
@@ -49,6 +48,8 @@ export default function TasksPage() {
   const [thisMonthTasks, setThisMonthTasks] = useState<TMTaskData[]>([]);
   const [nextMonthTasks, setNextMonthTasks] = useState<NMTaskData[]>([]);
   const [projectedGain,setProjectedGain] = useState<number>(0);
+  const [dailyAverage,setDailyAverage] = useState<number>(0);
+  const [performanceScore,setPerformanceScore] = useState<number>(0);
   const [negation, setNegation] = useState<number>(0);
   const [daysSinceReset, setDaysSinceReset] = useState<number>(0);
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
@@ -64,6 +65,8 @@ export default function TasksPage() {
           setUsername(parsedStats["user-id"]);
           setDaysSinceReset(parsedStats["days-since-reset"]);
           setNegation(parsedStats["negation"]);
+          setPerformanceScore(parsedStats["performance-score"]);
+          setDailyAverage(Math.floor(parsedStats["performance-score"] / parsedStats["days-since-reset"]));
         } else {
           router.push("/");
         }
@@ -106,9 +109,9 @@ export default function TasksPage() {
     }
 
     if (completed_minimum) {
-      setProjectedGain(Math.floor(projected_delta / daysSinceReset));
+      setProjectedGain(Math.floor((projected_delta + performanceScore) / (daysSinceReset + 1)) - dailyAverage);
     } else {
-      setProjectedGain(Math.floor(negation / daysSinceReset));
+      setProjectedGain(Math.floor((negation + performanceScore) / (daysSinceReset + 1))  - dailyAverage);
     };
   }
 
@@ -370,12 +373,17 @@ export default function TasksPage() {
           <div className="text-white text-right flex items-center">
           <TabsContent value="current">
             <div>
+              <div>
+                Daily Average: {dailyAverage} 
+              </div>
+            </div>
+            <div>
               <div
                 style={{
                   color: projectedGain >= 0 ? "green" : "red",
                 }}
               >
-                {projectedGain >= 0 ? `+${projectedGain}` : projectedGain} &#9650;
+                {projectedGain >= 0 ? `+${projectedGain} ▲` : `${projectedGain} ▼`} 
               </div>
             </div>
           </TabsContent>

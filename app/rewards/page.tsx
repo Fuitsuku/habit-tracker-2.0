@@ -152,8 +152,10 @@ export default function RewardsPage() {
 
   const monthlyReset = async () => {
     const response = await actionApi.monthlyResetCall("/action/reset", {"user-id" : username})
-    console.log(response);
-  }
+    const statUpdate = await actionApi.loginCall("/action/login", { "user-id": username });
+            const user_stats = statUpdate.data.payload;
+            localStorage.setItem('stats', JSON.stringify(user_stats));
+  };
 
   // Open the drawer with selected reward
   const openDrawer = (reward: RewardData) => {
