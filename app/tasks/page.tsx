@@ -256,9 +256,9 @@ export default function TasksPage() {
                 <table className="min-w-full border-collapse border-none">
                   <tbody>
                     {nextMonthTasks.map((task, index) => (
-                      <tr key={index} className="h-[4px] border-b border-white">
-                        <td colSpan={3} className="p-2 py-4">
-                          <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 h-[4px] justify-center">
+                      <tr key={index} className="border-b border-white">
+                        <td colSpan={3} className="p-2 py-2">
+                          <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 justify-center">
                             <div className="text-white font-bold text-sm">{task["task-name"]}</div>
                             <div className="text-white text-right text-sm">{task["point-value"]} Points</div>
                             <div className="text-white text-right text-sm">{task["growth-factor"]}X</div>
