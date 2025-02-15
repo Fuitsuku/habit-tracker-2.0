@@ -10,7 +10,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-
+import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import PageHeader from "@/app/components/PageHeader";
 import RewardApiWrapper from "@/api/rewards";
 import { useRouter } from "next/navigation";
@@ -167,25 +167,31 @@ export default function RewardsPage() {
     <div className="bg-[#202020] h-screen p-10">
       <PageHeader page_name="Rewards" />
       {/* Setup Section */}
-      <div className="space-y-2 min-h-[400px] h-[400px] justify-center overflow-y-auto bg-black rounded-lg border-none shadow-none">
-        <table className="min-w-full border-collapse border-none">
-          <tbody>
-            {rewards.map((reward, index) => (
-              <tr
-                key={index}
-                className="h-12 p-2 border-b border-white cursor-pointer hover:bg-gray-800"
-                onClick={() => openDrawer(reward)}
-              >
-                <td colSpan={2} className="p-2 py-4 px-10">
-                  <div className="grid grid-cols-2 gap-4 h-[4px]">
-                    <div className="text-white font-bold text-sm">{reward["reward-name"]}</div>
-                    <div className="text-white text-right text-sm">{reward["point-value"]} Points</div>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-2 min-h-[300px] h-[300px] overflow-y-auto bg-black border-none rounded-lg shadow-none">
+        <Table className="min-w-full border-collapse border-none">
+          <thead>
+            <TableRow className="h-6 border-b border-white">
+              <TableCell className="text-white text-sm font-semibold">Reward Name</TableCell>
+              <TableCell className="text-center text-sm text-white font-semibold">Point Value</TableCell>
+            </TableRow>
+          </thead>
+            <TableBody>
+              {rewards.map((reward, index) => (
+                <TableRow key={index + 1} className="h-4 border-b border-white">
+                  <TableCell 
+                  className="text-white text-xs"
+                  onClick={() => openDrawer(reward)}>
+                    {reward["reward-name"]}
+                  </TableCell>
+                  <TableCell 
+                  className="text-center text-xs text-white"
+                  onClick={() => openDrawer(reward)}>
+                    {reward["point-value"]}
+                    </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
 
         {/* Add Task and Delete Buttons */}
         <div className="flex justify-center mt-4 space-x-4">

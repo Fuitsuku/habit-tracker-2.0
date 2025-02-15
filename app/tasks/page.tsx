@@ -217,7 +217,7 @@ export default function TasksPage() {
         </TabsList>
         <TabsContent value="current">
           <Card className="border-none shadow-none">
-            <CardContent className="space-y-2 min-h-[350px] h-[350px] overflow-y-auto bg-black border-none rounded-lg shadow-none">
+            <CardContent className="space-y-2 min-h-[300px] h-[300px] overflow-y-auto bg-black border-none rounded-lg shadow-none">
               <Table className="min-w-full border-collapse border-none">
               <thead>
                 <TableRow className="h-6 border-b border-white">
@@ -250,7 +250,7 @@ export default function TasksPage() {
         </TabsContent>
         <TabsContent value="setup">
           <Card className="border-none shadow-none">
-            <CardContent className="space-y-2 min-h-[350px] h-[350px] overflow-y-auto bg-black rounded-lg border-none shadow-none">
+            <CardContent className="space-y-2 min-h-[300px] h-[300px] overflow-y-auto bg-black rounded-lg border-none shadow-none">
               <div className="flex flex-col">
                 {/* Tasks Table */}
                 <table className="min-w-full border-collapse border-none">
