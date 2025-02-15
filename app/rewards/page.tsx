@@ -167,19 +167,19 @@ export default function RewardsPage() {
     <div className="bg-[#202020] h-screen p-10">
       <PageHeader page_name="Rewards" />
       {/* Setup Section */}
-      <div className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
+      <div className="space-y-2 min-h-[400px] h-[400px] justify-center overflow-y-auto bg-black rounded-lg border-none shadow-none">
         <table className="min-w-full border-collapse border-none">
           <tbody>
             {rewards.map((reward, index) => (
               <tr
                 key={index}
-                className="h-24 p-2 border-b border-white cursor-pointer hover:bg-gray-800"
+                className="h-12 p-2 border-b border-white cursor-pointer hover:bg-gray-800"
                 onClick={() => openDrawer(reward)}
               >
                 <td colSpan={2} className="p-2 py-4 px-10">
-                  <div className="grid grid-cols-2 gap-4 h-full">
-                    <div className="text-white font-bold">{reward["reward-name"]}</div>
-                    <div className="text-white text-right">{reward["point-value"]} Points</div>
+                  <div className="grid grid-cols-2 gap-4 h-[4px]">
+                    <div className="text-white font-bold text-sm">{reward["reward-name"]}</div>
+                    <div className="text-white text-right text-sm">{reward["point-value"]} Points</div>
                   </div>
                 </td>
               </tr>

@@ -197,9 +197,9 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="bg-[#202020] h-screen p-10">
+    <div className="bg-[#202020] min-h-screen p-10">
       <PageHeader page_name="Tasks" />
-      <Tabs defaultValue="current" className="">
+      <Tabs defaultValue="current" className="flex flex-col flex-grow ">
         {/* Top Header */}
         <TabsList className="grid w-full grid-cols-2 bg-[#27272A] border-none">
           <TabsTrigger
@@ -217,7 +217,7 @@ export default function TasksPage() {
         </TabsList>
         <TabsContent value="current">
           <Card className="border-none shadow-none">
-            <CardContent className="space-y-2 h-96 overflow-y-auto bg-black border-none rounded-lg shadow-none">
+            <CardContent className="space-y-2 min-h-[350px] h-[350px] overflow-y-auto bg-black border-none rounded-lg shadow-none">
               <Table className="min-w-full border-collapse border-none">
               <thead>
                 <TableRow className="h-6 border-b border-white">
@@ -229,7 +229,7 @@ export default function TasksPage() {
               </thead>
                 <TableBody>
                   {thisMonthTasks.map((task, index) => (
-                    <TableRow key={index + 1} className="h-6 border-b border-white">
+                    <TableRow key={index + 1} className="h-4 border-b border-white">
                       <TableCell className="text-center text-white">
                         <input
                           type="checkbox"
@@ -250,16 +250,16 @@ export default function TasksPage() {
         </TabsContent>
         <TabsContent value="setup">
           <Card className="border-none shadow-none">
-            <CardContent className="space-y-2 h-96 overflow-y-auto bg-black rounded-lg border-none shadow-none">
+            <CardContent className="space-y-2 min-h-[350px] h-[350px] overflow-y-auto bg-black rounded-lg border-none shadow-none">
               <div className="flex flex-col">
                 {/* Tasks Table */}
                 <table className="min-w-full border-collapse border-none">
                   <tbody>
                     {nextMonthTasks.map((task, index) => (
-                      <tr key={index} className="h-6 border-b border-white">
+                      <tr key={index} className="h-[4px] border-b border-white">
                         <td colSpan={3} className="p-2 py-4">
-                          <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 h-6">
-                            <div className="text-white font-bold">{task["task-name"]}</div>
+                          <div className="grid grid-cols-[2fr,1fr,1fr] gap-4 h-[4px] justify-center">
+                            <div className="text-white font-bold text-sm">{task["task-name"]}</div>
                             <div className="text-white text-right text-sm">{task["point-value"]} Points</div>
                             <div className="text-white text-right text-sm">{task["growth-factor"]}X</div>
                           </div>
