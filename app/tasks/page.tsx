@@ -250,7 +250,7 @@ export default function TasksPage() {
         </TabsContent>
         <TabsContent value="setup">
           <Card className="border-none shadow-none">
-            <CardContent className="space-y-2 min-h-[300px] h-[300px] overflow-y-auto bg-black rounded-lg border-none shadow-none">
+            <CardContent className="space-y-2 min-h-[300px] sm:min-h-[150px] h-[300px] sm:h-[150px] overflow-y-auto bg-black rounded-lg border-none shadow-none">
               <div className="flex flex-col">
                 {/* Tasks Table */}
                 <table className="min-w-full border-collapse border-none">
