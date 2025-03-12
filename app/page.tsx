@@ -40,7 +40,7 @@ export default function LoginPage() {
 
     const handleRegister = () => {
         router.push("/register");
-    };
+    }; 
 
     return (
         <div className="bg-zinc-900 flex justify-center items-center h-screen p-10">
