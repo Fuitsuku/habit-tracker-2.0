@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { DateTime } from 'luxon';
 
 interface ActionApiConfig {
     baseURL: string; // The base URL for the API
@@ -8,6 +9,7 @@ interface ActionApiConfig {
 
 class ActionApiWrapper {
     private client: AxiosInstance;
+    private last_valid_action: string;
 
     constructor(config: ActionApiConfig) {
         this.client = axios.create({
@@ -15,12 +17,17 @@ class ActionApiWrapper {
             timeout: config.timeout || 10000, // Default timeout: 10s
             headers: config.headers || { "Content-Type": "application/json" },
         });
+        this.last_valid_action = DateTime.utc().toISO();
+
     }
 
     // Login
     async loginCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -30,7 +37,10 @@ class ActionApiWrapper {
     // Track Day
     async trackDayCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
 
@@ -41,7 +51,10 @@ class ActionApiWrapper {
     // Monthly Reset
     async monthlyResetCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -51,7 +64,10 @@ class ActionApiWrapper {
     // Set Up Environment
     async setUpEnvironmentCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);

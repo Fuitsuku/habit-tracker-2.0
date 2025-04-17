@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { DateTime } from 'luxon';
 
 interface RewardApiConfig {
     baseURL: string; // The base URL for the API
@@ -16,6 +17,7 @@ type RewardList = Record<string, Reward>;
 
 class RewardApiWrapper {
     private client: AxiosInstance;
+    private last_valid_action: string;
 
     constructor(config: RewardApiConfig) {
         this.client = axios.create({
@@ -23,6 +25,8 @@ class RewardApiWrapper {
             timeout: config.timeout || 10000, // Default timeout: 10s
             headers: config.headers || { "Content-Type": "application/json" },
         });
+        this.last_valid_action = DateTime.utc().toISO();
+
     }
 
     // Parses reward_list objects and returns it as a list of reward
@@ -44,7 +48,10 @@ class RewardApiWrapper {
     // Get Reward Data
     async getRewardsCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -54,7 +61,10 @@ class RewardApiWrapper {
     // Create Reward
     async createRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -64,7 +74,10 @@ class RewardApiWrapper {
     // Delete Reward
     async deleteRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -74,7 +87,10 @@ class RewardApiWrapper {
     // Redeem Reward
     async redeemRewardCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);

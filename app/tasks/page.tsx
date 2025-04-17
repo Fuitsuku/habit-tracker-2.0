@@ -54,6 +54,8 @@ export default function TasksPage() {
   const [daysSinceReset, setDaysSinceReset] = useState<number>(0);
   const [newNextMonthTask, setNewNextMonthTask] = useState<NMTaskDataLocal>({"task-name" : "","point-value": 0, "growth-factor": 0 });
   const [addDrawerOpen, setAddDrawerOpen] = useState(false); // For the + button drawer
+  const [error, setError] = useState(""); // State to store error messages
+  const [success, setSuccess] = useState(false); // State for success message
   const router = useRouter();
 
   useEffect(() => {
@@ -193,6 +195,30 @@ export default function TasksPage() {
     } catch (err: any) {
         // Check if the error has a response from the backend
         console.error('An error has occurred. Contact the Developer.');
+    }
+  };
+
+  const trackDay = async () => {
+    setError(""); // Reset error message
+    setSuccess(false); // Reset success message
+    
+    try {
+        const payload = {
+            "user-id" : username
+        };
+
+        const response = await actionApi.trackDayCall('/action/track', payload);    
+        console.log("Successfully Tracked Day.")
+
+        const response_update = await actionApi.loginCall("/action/login", { "user-id": username });
+        const user_stats = response_update.data.payload;
+        localStorage.setItem('stats', JSON.stringify(user_stats));
+        setSuccess(true); // Show success message
+        await sleep(2000);
+        setSuccess(false);
+    } catch (err: any) {
+        // Check if the error has a response from the backend
+        setError(err.message || "An error occurred while logging in."); // Fallback message
     }
   };
 
@@ -386,6 +412,17 @@ export default function TasksPage() {
                 {projectedGain >= 0 ? `+${projectedGain} ▲` : `${projectedGain} ▼`} 
               </div>
             </div>
+            {/* Footer Section */}
+            <div className="flex justify-between items-center mt-4">
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                {success && <p className="text-green-500 text-sm mt-2">Successfully Tracked Day!</p>}
+                <button
+                    onClick={() => trackDay()} // Reset rewards
+                    className="bg-black text-white text-xl p-3 rounded-lg w-40"
+                >
+                Track Day
+                </button>
+            </div>
           </TabsContent>
               <TabsContent value="setup">
                   <button
@@ -402,3 +439,4 @@ export default function TasksPage() {
     </div>
   );
 }
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

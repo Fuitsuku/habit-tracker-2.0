@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { DateTime } from 'luxon';
 
 interface TaskApiConfig {
     baseURL: string; // The base URL for the API
@@ -27,6 +28,7 @@ type FutureTaskList = Record<string, FutureTask>;
 
 class TaskApiWrapper {
     private client: AxiosInstance;
+    private last_valid_action: string;
 
     constructor(config: TaskApiConfig) {
         this.client = axios.create({
@@ -34,7 +36,10 @@ class TaskApiWrapper {
             timeout: config.timeout || 10000, // Default timeout: 10s
             headers: config.headers || { "Content-Type": "application/json" },
         });
-    }
+
+        this.last_valid_action = DateTime.utc().toISO();
+
+    };
 
     // Parses this_month_task objects and returns it as a list of tasks
     parseTMT(this_month_tasks_raw:CurrentTaskList):CurrentTask[]{
@@ -75,7 +80,10 @@ class TaskApiWrapper {
     // Get Tasks
     async getTasksCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+            
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -85,7 +93,10 @@ class TaskApiWrapper {
     // Create Task
     async createTaskCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -95,7 +106,9 @@ class TaskApiWrapper {
     // Delete Task
     async deleteTaskCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -105,7 +118,9 @@ class TaskApiWrapper {
     // Complete Task
     async completeTaskCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
             return response;
         } catch (error) {
             throw this.handleError(error);

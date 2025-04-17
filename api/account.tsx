@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { DateTime } from 'luxon';
 
 interface AccountApiConfig {
     baseURL: string; // The base URL for the API
@@ -8,6 +9,7 @@ interface AccountApiConfig {
 
 class AccountApiWrapper {
     private client: AxiosInstance;
+    private last_valid_action: string;
 
     constructor(config: AccountApiConfig) {
         this.client = axios.create({
@@ -15,13 +17,16 @@ class AccountApiWrapper {
             timeout: config.timeout || 10000, // Default timeout: 10s
             headers: config.headers || { "Content-Type": "application/json" },
         });
+        this.last_valid_action = DateTime.utc().toISO();
     }
 
     // Create Account
     async createAccountCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
-            console.log(response)
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
@@ -31,7 +36,10 @@ class AccountApiWrapper {
     // Delete Account
     async deleteAccountCall(endpoint: string, data: any): Promise<AxiosResponse<any>> {
         try {
+            data["last_valid"] = DateTime.utc().toISO();
             const response = await this.client.post(endpoint, data);
+            this.last_valid_action =  data["last_valid"]
+
             return response;
         } catch (error) {
             throw this.handleError(error);
